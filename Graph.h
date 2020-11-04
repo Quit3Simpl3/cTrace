@@ -6,11 +6,13 @@
 class Graph{
 public:
     Graph(std::vector<std::vector<int>> matrix);
-    
+
     void infectNode(int nodeInd);
     bool isInfected(int nodeInd);
 private:
     std::vector<std::vector<int>> edges;
-}
+    std::vector<int> nodes_state;
+    int infected_counter;
+};
 
 #endif
