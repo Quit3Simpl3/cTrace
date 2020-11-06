@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include "Session.h"
+#include <typeinfo>
 
 using namespace std;
 
@@ -19,18 +20,24 @@ void Tree::addChild(const Tree &child)  {
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
     Session temp = session; //need to fix the sintex..
-    //if(temp.getTreeType() == MaxRank) { //need to fix
-    //    Tree *max_tree = new MaxRankTree(rootLabel);
-  //  }
+    Tree *base_tree = new RootTree(rootLabel); // TODO: need to fix
+    if(temp.getTreeType() == MaxRank) {
+        Tree *base_tree = new MaxRankTree(rootLabel);
+   } else if (temp.getTreeType() == Cycle) {
+        Tree *base_tree = new CycleTree(rootLabel,rootLabel);
+   // }else
+  //      Tree *base_tree = new RootTree(rootLabel);
+
     queue <int> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-
     Graph tempgraph = temp.getgraph(); //need to fix the sintex..
+
     int node_size = tempgraph.size();
     for (int i=0;  i < node_size;++i ) { //initialization the vector
         child_is_in[i] = true;
     }
+
     child_pos.push(rootLabel);
     Tree *father_tree = new MaxRankTree(rootLabel);
     child_is_in[rootLabel] == false;
@@ -42,8 +49,8 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] == false;
                 child_pos.push(i);
-                Tree *max_tree_child = new MaxRankTree(i);
-                father_tree->addChild(*max_tree_child);
+                Tree *child_tree =new Treetype. (i)); //TODO: build treetype func..
+                base_tree->addChild(*child_tree);
             }
 
         }
@@ -65,6 +72,7 @@ int Tree::BFS(TreeType type,int rootLabel) {
 
     return 0;
 }
+
 
 
 CycleTree::CycleTree(int rootLabel, int currCycle) {

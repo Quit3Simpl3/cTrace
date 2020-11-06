@@ -15,6 +15,7 @@ public:
     virtual int traceTree()=0;
     int BFS(TreeType type,int rootLabel);
 
+
 private:
     int node;
     std::vector<Tree*> children;
