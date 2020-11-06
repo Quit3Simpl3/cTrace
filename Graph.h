@@ -3,6 +3,12 @@
 
 #include <vector>
 
+enum InfectionState{
+    VirusFree,
+    Infected,
+    Occupied
+};
+
 class Graph{
 public:
     Graph();
@@ -10,9 +16,10 @@ public:
 
     void infectNode(int nodeInd);
     bool isInfected(int nodeInd);
+
 private:
     std::vector<std::vector<int>> edges;
-    std::vector<int> nodes_state;
+    std::vector<InfectionState> nodes_state;
     int infected_counter;
 };
 

@@ -1,17 +1,23 @@
 #include "Graph.h"
 
 #include <utility>
+#include <iostream>
+
+using namespace std;
 
 Graph::Graph(std::vector<std::vector<int>> matrix) {
-    this->edges = std::move(matrix);
-    /*for (int i = 0; i < edges.size(); ++i) {
-        this->nodes_state[i] = 0; // 0=virus-free, 1=infected, 2=occupied
+    cout << "I'm gonna start building your graph now..." << endl; // delme
+    this->edges = std::move(matrix); // rename matrix to this.edges
+    int num_of_nodes = this->edges.size();
+    for (int i = 0; i < num_of_nodes; ++i) {
+        this->nodes_state.push_back(VirusFree); // virus-free, infected, occupied
     }
-    this->infected_counter = 0; // no vertices are currently infected*/
+    this->infected_counter = 0; // no vertices are currently infected
 }
 
 void Graph::infectNode(int nodeInd) {
-    this->nodes_state[nodeInd] = 1;
+    this->nodes_state[nodeInd] = Infected; // set node as infected
+    this->infected_counter++;
 }
 
 bool Graph::isInfected(int nodeInd) {
@@ -19,5 +25,5 @@ bool Graph::isInfected(int nodeInd) {
 }
 
 Graph::Graph() {
-
+    //TODO: do we really need a default constructor?
 }
