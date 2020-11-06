@@ -1,6 +1,6 @@
 #ifndef TREE_H_
 #define TREE_H_
-
+#include "Session.h"
 #include <vector>
 
 class Session;
@@ -13,6 +13,8 @@ public:
 
     static Tree* createTree(const Session& session, int rootLabel);
     virtual int traceTree()=0;
+    int BFS(TreeType type,int rootLabel);
+
 private:
     int node;
     std::vector<Tree*> children;
@@ -21,7 +23,7 @@ private:
 class CycleTree: public Tree{
 public:
     CycleTree(int rootLabel, int currCycle);
-    virtual int traceTree() = 0;
+    virtual int traceTree() ;
 private:
     int currCycle;
 };
@@ -29,13 +31,13 @@ private:
 class MaxRankTree: public Tree{
 public:
     MaxRankTree(int rootLabel);
-    virtual int traceTree() = 0;
+    virtual int traceTree() ;
 };
 
 class RootTree: public Tree{
 public:
     RootTree(int rootLabel);
-    virtual int traceTree() = 0;
+    virtual int traceTree() ;
 };
 
 #endif
