@@ -17,3 +17,12 @@ void Graph::infectNode(int nodeInd) {
 bool Graph::isInfected(int nodeInd) {
     return (this->nodes_state[nodeInd] == 1);
 }
+
+int Graph::size() {
+
+    return (this->edges.size());
+}
+
+vector<int> Graph::getegde(int k) {
+    return edges[k];
+}

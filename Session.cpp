@@ -42,5 +42,10 @@ int Session::dequeueInfected() {
 }
 
 TreeType Session::getTreeType() const {
+
     return Root;
+}
+
+Graph Session::getgraph() {
+    return Graph(g);
 }
