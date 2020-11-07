@@ -13,69 +13,63 @@ Tree::Tree(int rootLabel) {
 }
 
 void Tree::addChild(const Tree &child)  {
-    Tree* pointer = (Tree*) (&child);
-    children.push_back(pointer);
+
+
+    children.push_back((Tree*) (&child));
 }
 
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    Session temp = session; //need to fix the sintex..
-    Tree *base_tree = new RootTree(rootLabel); // TODO: need to fix
+    Session temp = session; //need to fix the syntax..
     if(temp.getTreeType() == MaxRank) {
-        Tree *base_tree = new MaxRankTree(rootLabel);
+            return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
-        Tree *base_tree = new CycleTree(rootLabel,rootLabel);
-   // }else
-  //      Tree *base_tree = new RootTree(rootLabel);
+            return (new CycleTree(rootLabel,rootLabel));
+    }else
+            return (new RootTree(rootLabel));
+}
 
-    queue <int> child_pos;  //for running the BFS
+Tree *Tree::BFS(const Session& session,int rootLabel) {
+    Session temp = session;
+    queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    Graph tempgraph = temp.getgraph(); //need to fix the sintex..
+    Graph tempgraph = temp.getgraph(); //need to fix the syntax..
 
     int node_size = tempgraph.size();
     for (int i=0;  i < node_size;++i ) { //initialization the vector
-        child_is_in[i] = true;
+        child_is_in.push_back(true);
     }
+    Tree *father_tree = Tree::createTree(temp,rootLabel);
+    Tree *tmptree;
+    child_pos.push(father_tree);
 
-    child_pos.push(rootLabel);
-    Tree *father_tree = new MaxRankTree(rootLabel);
-    child_is_in[rootLabel] == false;
-    while (!child_pos.empty()) {
-        int tmp_node = child_pos.front();
+    child_is_in[rootLabel] = false;
+    do {
+        tmptree = child_pos.front();
         child_pos.pop();
-        vector<int> is_edge = tempgraph.getegde(tmp_node);
-        for (int i = 0; i < node_size; ++i){
+        vector<int> is_edge = tempgraph.getegde(tmptree->mynode());
+        for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
-                child_is_in[i] == false;
-                child_pos.push(i);
-                Tree *child_tree =new Treetype. (i)); //TODO: build treetype func..
-                base_tree->addChild(*child_tree);
+                child_is_in[i] = false;
+                Tree *child_tree = Tree::createTree(temp,i);
+                child_pos.push(child_tree);
+                tmptree->addChild(*child_tree);
             }
-
         }
 
     }
-
-
-
-
-
-
-
-
-    return nullptr;
+    while (!child_pos.empty());
+    return father_tree;
 }
 
-int Tree::BFS(TreeType type,int rootLabel) {
-
-
-    return 0;
+int Tree::mynode() {
+    return node;
 }
 
 
+CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {
 
-CycleTree::CycleTree(int rootLabel, int currCycle) {
 
 }
 
