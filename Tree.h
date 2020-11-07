@@ -13,8 +13,8 @@ public:
 
     static Tree* createTree(const Session& session, int rootLabel);
     virtual int traceTree()=0;
-    int BFS(TreeType type,int rootLabel);
-
+    Tree* BFS(const Session& session,int rootLabel);
+    int mynode();
 
 private:
     int node;
