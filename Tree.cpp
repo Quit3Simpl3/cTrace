@@ -2,7 +2,7 @@
 #include <queue>
 #include <vector>
 #include "Session.h"
-#include <typeinfo>
+
 
 using namespace std;
 
