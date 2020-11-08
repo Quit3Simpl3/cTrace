@@ -43,6 +43,10 @@ TreeType json_to_treeType(json j) {
     if (tree_type_short == "R") return Root;
 }
 
+Session::Session() { // default constructor - is this REALLY necessary?
+
+}
+
 Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
     fstream stream(path);

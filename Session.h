@@ -15,6 +15,7 @@ enum TreeType{
 
 class Session{
 public:
+    Session();
     Session(const std::string& path);
     
     void simulate();
