@@ -93,8 +93,18 @@ int MaxRankTree::traceTree() {
         return mynode();
     }else {
         vector<int [3]> *track_tree=MaxtraceTree(track_tree,0); //i will change to static
+        int point = 0;
+        for (int i = 1; i<track_tree->size();++i) {
+            if (track_tree[i][0]>track_tree[point][0]){
+                point = i;
+            }else if (track_tree[i][0]==track_tree[point][0]){
+                if(track_tree[i][1]<track_tree[point][1]) {
+                    point = i;
+                }
+            }
         }
-    return 0;
+        return *track_tree[point][2];
+        }
 }
 vector<int [3]>* Tree::MaxtraceTree (vector<int [3]> *track_tree, int high) {
     int mysize = children.size();
