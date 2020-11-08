@@ -17,6 +17,7 @@ public:
     static Tree* BFS(const Session& session,int rootLabel);
     int mynode();
     vector<Tree*> mychild();
+    vector<int [3]>* MaxtraceTree(vector<int [3]> *track_tree, int high);
 
 private:
     int node; // DO NOT CHANGE!
@@ -35,6 +36,7 @@ class MaxRankTree: public Tree{
 public:
     MaxRankTree(int rootLabel); // DO NOT CHANGE!
     virtual int traceTree() ; // DO NOT CHANGE!
+
 };
 
 class RootTree: public Tree{

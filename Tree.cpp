@@ -89,10 +89,27 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 
 int MaxRankTree::traceTree() {
 
-
-
+    if (mychild().empty()) {
+        return mynode();
+    }else {
+        vector<int [3]> *track_tree=MaxtraceTree(track_tree,0); //i will change to static
+        }
     return 0;
 }
+vector<int [3]>* Tree::MaxtraceTree (vector<int [3]> *track_tree, int high) {
+    int mysize = children.size();
+    int me [3] = {mysize,high,mynode()};
+    track_tree->push_back(me);
+    if (mychild().empty()) {
+        return track_tree;
+    }else
+        for (int i = 0; i<mysize;++i) {
+            children[i]->MaxtraceTree(track_tree, high+1);
+
+        }
+    return track_tree;
+}
+
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 
