@@ -22,7 +22,7 @@ void Graph::infectNode(int nodeInd) {
 }
 
 bool Graph::isInfected(int nodeInd) {
-    return (this->nodes_state[nodeInd] == 1);
+    return (this->nodes_state[nodeInd] == Infected);
 }
 
 Graph::Graph() {
@@ -40,4 +40,16 @@ vector<int> Graph::getegde(int k) const {
 void Graph::removeEdge(int u, int v) { // remove the edge {u,v} from this->edges
     this->edges[u][v] = 0; // removes the edge from u's neighbors list
     this->edges[v][u] = 0; // removes the edge from v's neighbors list
+}
+
+bool Graph::isVirusFree(int nodeInd) {
+    return (this->nodes_state[nodeInd] == VirusFree);
+}
+
+vector<int> Graph::getNeighbors(int node) {
+    vector<int> neighbors;
+    for (int i : this->edges[node]) {
+        if (i == 1) neighbors.push_back(i);
+    }
+    return neighbors;
 }

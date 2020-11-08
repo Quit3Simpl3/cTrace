@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <queue>
 #include "Graph.h"
 
 class Agent; // DO NOT CHANGE!
@@ -32,6 +33,7 @@ private:
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
     std::vector<std::vector<int>> matrix;
+    queue<int> infectedQ;
 };
 
 #endif

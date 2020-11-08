@@ -20,7 +20,6 @@ public:
     void removeEdges(Session& session, int node);
     int dequeueInfected(Session& session);
 private:
-    int start_node;
 };
 
 
@@ -29,6 +28,9 @@ public:
     Virus(int nodeInd); // DO NOT CHANGE!
 
     virtual void act(Session& session); // DO NOT CHANGE!
+    void infectNode(Session& session, int node);
+    int findNextVictim(Session& session);
+
 private:
     const int nodeInd; // DO NOT CHANGE!
 };

@@ -81,12 +81,19 @@ void Session::setGraph(const Graph &graph) {
     this->g = graph; // todo: check move-constructor
 }
 
-void Session::enqueueInfected(int) {
-    // TODO
+void Session::enqueueInfected(int node) {
+    this->infectedQ.push(node);
 }
 
 int Session::dequeueInfected() {
-    return 0; // TODO
+    if (this->infectedQ.empty()) { // handle empty queue
+        return -1;
+    }
+    else {
+        int node = this->infectedQ.front(); // get node at front of the queue
+        infectedQ.pop(); // delete node at front of the queue
+        return node;
+    }
 }
 
 TreeType Session::getTreeType() const {
@@ -94,5 +101,5 @@ TreeType Session::getTreeType() const {
 }
 
 Graph Session::getGraph() {
-    return Graph(this->g);
+    return Graph(this->g); // TODO: why not 'return this-g;'?
 }

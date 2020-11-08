@@ -18,7 +18,9 @@ public:
 
     void infectNode(int nodeInd); // DO NOT CHANGE!
     bool isInfected(int nodeInd); // DO NOT CHANGE!
-    
+    bool isVirusFree(int nodeInd);
+    vector<int> getNeighbors(int node);
+
     int size() const;
     vector<int> getegde(int k) const;
 
