@@ -21,6 +21,8 @@ public:
     
     int size() const;
     vector<int> getegde(int k) const;
+
+    void removeEdge(int u, int v);
     
 private:
     std::vector<std::vector<int>> edges; // DO NOT CHANGE!

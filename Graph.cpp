@@ -36,3 +36,8 @@ int Graph::size() const {
 vector<int> Graph::getegde(int k) const {
     return edges[k];
 }
+
+void Graph::removeEdge(int u, int v) { // remove the edge {u,v} from this->edges
+    this->edges[u][v] = 0; // removes the edge from u's neighbors list
+    this->edges[v][u] = 0; // removes the edge from v's neighbors list
+}

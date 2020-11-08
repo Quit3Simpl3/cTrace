@@ -27,6 +27,7 @@ void ContactTracer::act(Session& session) {
 
 void ContactTracer::removeEdges(int node) {
     // TODO: remove node's edges
+
 }
 
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {
