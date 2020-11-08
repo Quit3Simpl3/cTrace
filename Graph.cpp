@@ -9,15 +9,16 @@ Graph::Graph(std::vector<std::vector<int>> matrix) {
     cout << "I'm gonna start building your graph now..." << endl; // delme
     this->edges = std::move(matrix); // rename matrix to this.edges
     int num_of_nodes = this->edges.size();
-    for (int i = 0; i < num_of_nodes; ++i) {
-        this->nodes_state.push_back(VirusFree); // virus-free, infected, occupied
-    }
+    this->nodes_state = vector<InfectionState>(num_of_nodes, VirusFree);
+    /*for (int i = 0; i < num_of_nodes; ++i) {
+        this->nodes_state.push_back(VirusFree); // virus-free, infected, occupied // TODO: maybe without vector?
+    }*/
     this->infected_counter = 0; // no vertices are currently infected
 }
 
 void Graph::infectNode(int nodeInd) {
     this->nodes_state[nodeInd] = Infected; // set node as infected
-    this->infected_counter++;
+    this->infected_counter++; // Update infected_counter
 }
 
 bool Graph::isInfected(int nodeInd) {
