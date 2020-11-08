@@ -26,12 +26,14 @@ public:
     int dequeueInfected();
     TreeType getTreeType() const;
     Graph getGraph() const;
+    int getcyclenum () const;
 
 private:
     Graph g;
     TreeType treeType;
     std::vector<Agent*> agents;
     std::vector<std::vector<int>> matrix;
+    int cyclenum;
 };
 
 #endif

@@ -6,8 +6,8 @@
 
 using namespace std;
 
-Tree::Tree(int rootLabel) {
-    this->node = rootLabel;
+Tree::Tree(int rootLabel) : node(rootLabel) , children() {
+
 }
 
 void Tree::addChild(const Tree &child)  {
@@ -19,7 +19,7 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
     if(temp.getTreeType() == MaxRank) {
             return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
-            return (new CycleTree(rootLabel,rootLabel));
+            return (new CycleTree(rootLabel,session.getcyclenum()));
     }else
             return (new RootTree(rootLabel));
 }
@@ -28,10 +28,9 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    const Graph& g = session.getGraph(); //need to fix the syntax..
+    const Graph& g = session.getGraph();
 
-    int node_size = g.size();
-    for (int i=0;  i < node_size;++i ) { //initialization the vector
+    for (int i=0;  i < g.size();++i ) { //initialization the vector
         child_is_in.push_back(true);
     }
     Tree *father_tree = Tree::createTree(session, rootLabel);
@@ -61,6 +60,10 @@ int Tree::mynode() {
     return node;
 }
 
+vector<Tree *> Tree::mychild() {
+    return children;
+}
+
 
 CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {
 
@@ -68,7 +71,16 @@ CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle
 }
 
 int CycleTree::traceTree() {
-    return 0; // TODO: trace the bfs tree
+    if(currCycle == 0 || mychild().empty()) {
+        return mynode();
+    } else {
+        Tree *cycle_round = mychild()[0];
+        for (int i = 0; !(cycle_round->mychild().empty())&& i < currCycle; ++i) {
+            Tree *cycle_round = cycle_round->mychild()[0];
+        };
+        return cycle_round->mynode();
+    }
+    ; // TODO: trace the bfs tree
 }
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
@@ -76,6 +88,8 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int MaxRankTree::traceTree() {
+
+
 
     return 0;
 }
@@ -85,5 +99,6 @@ RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int RootTree::traceTree() {
-    return 0;
+    return mynode();
+
 }

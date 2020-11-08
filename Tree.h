@@ -3,6 +3,8 @@
 #include "Session.h"
 #include <vector>
 
+using namespace std;
+
 class Session;
 
 class Tree{
@@ -14,6 +16,7 @@ public:
     virtual int traceTree()=0; // DO NOT CHANGE!
     static Tree* BFS(const Session& session,int rootLabel);
     int mynode();
+    vector<Tree*> mychild();
 
 private:
     int node; // DO NOT CHANGE!

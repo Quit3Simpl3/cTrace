@@ -66,6 +66,9 @@ Session::Session(const std::string &path) {
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
+
+
+    cyclenum = 0;  //TODO: need to think if this is the right place for it
 }
 
 void Session::simulate() {
@@ -95,4 +98,8 @@ TreeType Session::getTreeType() const {
 
 Graph Session::getGraph() const {
     return Graph(this->g);
+}
+
+int Session::getcyclenum() const{
+    return cyclenum;
 }
