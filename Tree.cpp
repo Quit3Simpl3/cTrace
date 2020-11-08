@@ -14,7 +14,6 @@ void Tree::addChild(const Tree &child)  {
     children.push_back((Tree*) (&child));
 }
 
-
 Tree *Tree::createTree(const Session &session, int rootLabel) {
     Session temp = session; //need to fix the syntax..
     if(temp.getTreeType() == MaxRank) {
@@ -25,8 +24,8 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
             return (new RootTree(rootLabel));
 }
 
-Tree *Tree::BFS(const Session& session,int rootLabel) {
-    Session temp = session;
+Tree *Tree::BFS(const Session& session, int rootLabel) {
+    Session temp = session; // why using 'temp'? maybe just use 'session'?
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
@@ -36,7 +35,7 @@ Tree *Tree::BFS(const Session& session,int rootLabel) {
     for (int i=0;  i < node_size;++i ) { //initialization the vector
         child_is_in.push_back(true);
     }
-    Tree *father_tree = Tree::createTree(temp,rootLabel);
+    Tree *father_tree = Tree::createTree(temp, rootLabel);
     Tree *tmptree;
     child_pos.push(father_tree);
 
@@ -70,7 +69,7 @@ CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle
 }
 
 int CycleTree::traceTree() {
-    return 0;
+    return 0; // TODO: trace the bfs tree
 }
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {

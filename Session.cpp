@@ -94,3 +94,7 @@ TreeType Session::getTreeType() const {
 Graph Session::getgraph() {
     return Graph(g);
 }
+
+int Session::dequeueInfected() {
+    return 0;
+}
