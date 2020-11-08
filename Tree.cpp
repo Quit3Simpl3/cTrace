@@ -25,17 +25,16 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
 }
 
 Tree *Tree::BFS(const Session& session, int rootLabel) {
-    Session temp = session; // why using 'temp'? maybe just use 'session'?
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    Graph tempgraph = temp.getgraph(); //need to fix the syntax..
+    const Graph& g = session.getGraph(); //need to fix the syntax..
 
-    int node_size = tempgraph.size();
+    int node_size = g.size();
     for (int i=0;  i < node_size;++i ) { //initialization the vector
         child_is_in.push_back(true);
     }
-    Tree *father_tree = Tree::createTree(temp, rootLabel);
+    Tree *father_tree = Tree::createTree(session, rootLabel);
     Tree *tmptree;
     child_pos.push(father_tree);
 
@@ -43,11 +42,11 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        vector<int> is_edge = tempgraph.getegde(tmptree->mynode());
+        const vector<int>& is_edge = g.getegde(tmptree->mynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;
-                Tree *child_tree = Tree::createTree(temp,i);
+                Tree *child_tree = Tree::createTree(session,i);
                 child_pos.push(child_tree);
                 tmptree->addChild(*child_tree);
             }

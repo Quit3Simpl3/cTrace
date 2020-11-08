@@ -20,10 +20,9 @@ void ContactTracer::act(Session& session) {
     // 4) remove all the node's edges
 
     this->start_node = this->dequeueInfected(session); // get new infected node from queue
-    Tree* tree = Tree::createTree(session, this->start_node); // this tree does nothing
-    Tree* bfs_tree = tree->BFS(session, this->start_node); // maybe change BFS to 'static'?
+    Tree* bfs_tree = Tree::BFS(session, this->start_node);
     int patient = bfs_tree->traceTree();
-    this->removeEdges(patient);
+    this->removeEdges(patient); // remove all the patient's edges
 }
 
 void ContactTracer::removeEdges(int node) {
