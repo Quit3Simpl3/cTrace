@@ -29,11 +29,10 @@ Graph::Graph() {
     //TODO: do we really need a default constructor?
 }
 
-int Graph::size() {
-
+int Graph::size() const {
     return (this->edges.size());
 }
 
-vector<int> Graph::getegde(int k) {
+vector<int> Graph::getegde(int k) const {
     return edges[k];
 }

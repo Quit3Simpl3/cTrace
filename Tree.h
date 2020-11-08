@@ -7,38 +7,37 @@ class Session;
 
 class Tree{
 public:
+    Tree(int rootLabel); // DO NOT CHANGE!
+    void addChild(const Tree &child); // DO NOT CHANGE!
 
-    Tree(int rootLabel);
-    void addChild(const Tree &child);
-
-    static Tree* createTree(const Session& session, int rootLabel);
-    virtual int traceTree()=0;
-    Tree* BFS(const Session& session,int rootLabel);
+    static Tree* createTree(const Session& session, int rootLabel); // DO NOT CHANGE!
+    virtual int traceTree()=0; // DO NOT CHANGE!
+    static Tree* BFS(const Session& session,int rootLabel);
     int mynode();
 
 private:
-    int node;
-    std::vector<Tree*> children;
+    int node; // DO NOT CHANGE!
+    std::vector<Tree*> children; // DO NOT CHANGE!
 };
 
 class CycleTree: public Tree{
 public:
-    CycleTree(int rootLabel, int currCycle);
-    virtual int traceTree() ;
+    CycleTree(int rootLabel, int currCycle); // DO NOT CHANGE!
+    virtual int traceTree() ; // DO NOT CHANGE!
 private:
-    int currCycle;
+    int currCycle; // DO NOT CHANGE!
 };
 
 class MaxRankTree: public Tree{
 public:
-    MaxRankTree(int rootLabel);
-    virtual int traceTree() ;
+    MaxRankTree(int rootLabel); // DO NOT CHANGE!
+    virtual int traceTree() ; // DO NOT CHANGE!
 };
 
 class RootTree: public Tree{
 public:
-    RootTree(int rootLabel);
-    virtual int traceTree() ;
+    RootTree(int rootLabel); // DO NOT CHANGE!
+    virtual int traceTree() ; // DO NOT CHANGE!
 };
 
 #endif

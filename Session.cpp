@@ -40,7 +40,11 @@ TreeType json_to_treeType(json j) {
     string tree_type_short = j.at("tree");
     if (tree_type_short == "M") return MaxRank;
     if (tree_type_short == "C") return Cycle;
-    if (tree_type_short == "R") return Root;
+    else return Root; // maybe if(..."R")?
+}
+
+Session::Session() { // default constructor - is this REALLY necessary?
+
 }
 
 Session::Session(const std::string &path) {
@@ -62,7 +66,6 @@ Session::Session(const std::string &path) {
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
-
 }
 
 void Session::simulate() {
@@ -82,11 +85,14 @@ void Session::enqueueInfected(int) {
     // TODO
 }
 
-TreeType Session::getTreeType() const {
-    // TODO
-    return Root;
+int Session::dequeueInfected() {
+    return 0; // TODO
 }
 
-Graph Session::getgraph() {
-    return Graph(g);
+TreeType Session::getTreeType() const {
+    return this->treeType;
+}
+
+Graph Session::getGraph() const {
+    return Graph(this->g);
 }
