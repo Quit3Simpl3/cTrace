@@ -28,3 +28,12 @@ bool Graph::isInfected(int nodeInd) {
 Graph::Graph() {
     //TODO: do we really need a default constructor?
 }
+
+int Graph::size() {
+
+    return (this->edges.size());
+}
+
+vector<int> Graph::getegde(int k) {
+    return edges[k];
+}

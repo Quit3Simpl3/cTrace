@@ -86,3 +86,7 @@ TreeType Session::getTreeType() const {
     // TODO
     return Root;
 }
+
+Graph Session::getgraph() {
+    return Graph(g);
+}
