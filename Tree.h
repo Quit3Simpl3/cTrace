@@ -12,7 +12,7 @@ public:
 
     static Tree* createTree(const Session& session, int rootLabel); // DO NOT CHANGE!
     virtual int traceTree()=0; // DO NOT CHANGE!
-    static Tree* BFS(const Session& session,int rootLabel);
+    static Tree* BFS(Session& session,int rootLabel);
     int mynode();
 
 private:

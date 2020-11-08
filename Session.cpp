@@ -93,6 +93,6 @@ TreeType Session::getTreeType() const {
     return this->treeType;
 }
 
-Graph Session::getGraph() const {
+Graph Session::getGraph() {
     return Graph(this->g);
 }

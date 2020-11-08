@@ -24,11 +24,11 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
             return (new RootTree(rootLabel));
 }
 
-Tree *Tree::BFS(const Session& session, int rootLabel) {
+Tree *Tree::BFS(Session& session, int rootLabel) {
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    const Graph& g = session.getGraph(); //need to fix the syntax..
+    Graph& g = session.getGraph(); //need to fix the syntax..
 
     int node_size = g.size();
     for (int i=0;  i < node_size;++i ) { //initialization the vector

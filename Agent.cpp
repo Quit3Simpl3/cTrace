@@ -22,12 +22,14 @@ void ContactTracer::act(Session& session) {
     this->start_node = this->dequeueInfected(session); // get new infected node from queue
     Tree* bfs_tree = Tree::BFS(session, this->start_node);
     int patient = bfs_tree->traceTree();
-    this->removeEdges(patient); // remove all the patient's edges
+    this->removeEdges(session, patient); // remove all the patient's edges
 }
 
-void ContactTracer::removeEdges(int node) {
-    // TODO: remove node's edges
-
+void ContactTracer::removeEdges(Session& session, int node) {
+    Graph g = session.getGraph(); // TODO: change to reference?
+    for (int i = 0; i < g.size(); ++i) { // iterates on all vertices: {0,1,2,...}
+        g.removeEdge(node, i); // sets all of u's row in edges vector to 0
+    }
 }
 
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {
