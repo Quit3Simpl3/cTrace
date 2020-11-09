@@ -17,7 +17,7 @@ public:
     ContactTracer(); // DO NOT CHANGE!
 
     virtual void act(Session& session); // DO NOT CHANGE!
-    void removeEdges(Session& session, int node);
+    void removeAllEdges(Session& session, int node);
     int dequeueInfected(Session& session);
 private:
 };
@@ -30,26 +30,11 @@ public:
     virtual void act(Session& session); // DO NOT CHANGE!
     void infectNode(Session& session);
     void infectNode(Session& session, int node);
-    int findNextVictim(Session& session);
 
 private:
     const int nodeInd; // DO NOT CHANGE!
     bool is_active=true; // Whether Virus.act() should run
+    int findNextVictim(Session& session);
 };
 
 #endif
-
-/*
-
-class ContactTracer: public Agent{
-public:
-    ContactTracer(Session& session);
-    
-    virtual void act();
-private:
-    int dequeueInfected();
-    int traceTree();
-    int getNode();
-    int start_node;
-};
-*/

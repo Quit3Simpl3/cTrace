@@ -33,12 +33,10 @@ private:
     Graph g; // DO NOT CHANGE!
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
-    std::vector<std::vector<int>> matrix;
     queue<int> infectedQ;
     bool checkStopCondition();
     void updateCycle();
-    void createViruses(const vector<int>& nodes);
-    void createContactTracers(int contact_tracers);
+    void createAgent(int contact_tracers);
     int cycle;
 };
 

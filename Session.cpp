@@ -14,7 +14,7 @@ vector<vector<int>> json_to_matrix(json j) {
     return matrix;
 }
 
-vector<int> json_to_viruses(json j) {
+/*vector<int> json_to_viruses(json j) {
     vector<int> viruses;
     for (int i = 0; i < j.at("agents").size(); ++i) {
         if (j.at("agents").at(i)[0] == "V") {
@@ -34,6 +34,27 @@ int json_to_tracers(json j) {
     }
 
     return contact_tracers;
+}*/
+
+vector<int> json_to_agents(json j) {
+    vector<pair<string, int>> agents_matrix = j.at("agents");
+    vector<int> agents;
+    for (pair<string, int> agent : agents_matrix) {
+        agents.push_back(agent.second); // push the vertices' numbers into agents (ContactTracers are always -1)
+    }
+    return agents;
+}
+
+void Session::createAgent(int start_node) {
+    Agent* agent;
+    if (start_node == -1) {
+        agent = new ContactTracer(); // create a new contactTracer agent
+    }
+    else {
+        agent = new Virus(start_node); // create a new Virus agent
+        this->g.occupyNode(start_node); // mark start_node as occupied
+    }
+    this->addAgent(*agent); // add the new agent to the agents vector
 }
 
 TreeType json_to_treeType(json j) {
@@ -43,9 +64,7 @@ TreeType json_to_treeType(json j) {
     else return Root; // maybe if(..."R")?
 }
 
-Session::Session() { // default constructor - is this REALLY necessary?
-
-}
+Session::Session() {/*default constructor*/}
 
 Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
@@ -54,35 +73,17 @@ Session::Session(const std::string &path) {
     stream >> j;
     Graph g = Graph(json_to_matrix(j));
     setGraph(g);
-    this->matrix = matrix;
 
-    // parse json to viruses:
-    vector<int> virus_nodes = json_to_viruses(j);
-    this->createViruses(virus_nodes);
-
-    // parse json to contact tracers:
-    int contact_tracers = json_to_tracers(j);
-    this->createContactTracers(contact_tracers);
+    // Add agents to Session by their order in json config file:
+    vector<int> agents_nodes = json_to_agents(j); // parse json to agents
+    for (int start_node : agents_nodes) { // create agents by order of appearance
+        createAgent(start_node);
+    }
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
     // reset cycle to 0:
     this->cycle = 0;
-}
-
-void Session::createViruses(const vector<int>& nodes) {
-    for (int node : nodes) {
-        Agent* virus = new Virus(node); // create new Virus agent
-        this->g.occupyNode(node);
-        this->addAgent(*virus); // add the new agent to the agents vector
-    }
-}
-
-void Session::createContactTracers(int contact_tracers) {
-    for (int i = 0; i < contact_tracers; ++i) {
-        Agent* contact_tracer = new ContactTracer(); // create new contactTracer agent
-        this->addAgent(*contact_tracer); // add the new agent to the agents vector
-    }
 }
 
 bool Session::checkStopCondition() {
@@ -94,7 +95,6 @@ void Session::updateCycle() {
 }
 
 void Session::simulate() {
-    cout << "Number of nodes: " << this->matrix.size() << endl;
     cout << "Starting simulation..." << endl;
     //while(!this->checkStopCondition()) {
     for (int i = 0; i < 10; ++i) {

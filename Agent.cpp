@@ -1,13 +1,9 @@
 #include "Agent.h"
 #include "Tree.h"
 
-Agent::Agent() {
-    // TODO
-}
+Agent::Agent() {}
 
-ContactTracer::ContactTracer() {
-    // TODO
-}
+ContactTracer::ContactTracer() {}
 
 int ContactTracer::dequeueInfected(Session& session) {
     return session.dequeueInfected();
@@ -22,18 +18,16 @@ void ContactTracer::act(Session& session) {
     if (start_node == -1) return; // dequeueInfected returns -1 if empty
     Tree* bfs_tree = Tree::BFS(session, start_node);
     int patient = bfs_tree->traceTree();
-    this->removeEdges(session, patient); // remove all the patient's edges
+    this->removeAllEdges(session, patient); // remove all the patient's edges
 }
 
-void ContactTracer::removeEdges(Session& session, int node) {
+void ContactTracer::removeAllEdges(Session& session, int node) {
     for (int i = 0; i < session.getGraph().size(); ++i) { // iterates on all vertices: {0,1,2,...}
         session.getGraph().removeEdge(node, i); // sets all of u's row in edges vector to 0
     }
 }
 
-Virus::Virus(int nodeInd) : nodeInd(nodeInd) {
-    // TODO
-}
+Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
 
 void Virus::infectNode(Session& session) {
     this->infectNode(session, this->nodeInd);
@@ -46,8 +40,7 @@ void Virus::infectNode(Session& session, int node) {
     session.enqueueInfected(node);
     // copy virus if node is neighbor
     if (node != this->nodeInd) {
-        const Agent* virus = new Virus(node); // spread to the next victim
-        session.addAgent(*virus);
+        session.addAgent(*(new Virus(node))); // spread (clone self) to node
     }
 }
 
@@ -57,20 +50,21 @@ int Virus::findNextVictim(Session& session) { // make a copy to the next victim,
     for (int neighbor : neighbors) {
         if (g.isVirusFree(neighbor)) return neighbor;
     }
-    g.occupyNode(this->nodeInd);
-    // TODO: delete this virus
-    return -1;
+    // If no next victim, do:
+    g.occupyNode(this->nodeInd); // Change this node's state to 'Occupied' instead of 'Infected'
+    return -1; // Return 'no next victim' signal
 }
 
 void Virus::act(Session &session) {
-    // 1) infect this->nodeInd
-    // 2) if this->nodeInd is infected, then: find next victim and copy self to it
+    /* action types (each occurs in a single iteration):
+     * (1) Infect nodeInd and spread to first neighbor
+     * (2) Spread to next neighbor
+     * (3) Delete self */
 
     if (!this->is_active) return; // checks if the virus is active.
     if (!session.getGraph().isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
-    else { // infect neighbor
-        int next_victim = this->findNextVictim(session);
-        if (next_victim == -1) delete this; // TODO: remove this from agent list in session
-        else this->infectNode(session, next_victim);
-    }
+    // Continue to next victim:
+    int next_victim = this->findNextVictim(session);
+    if (next_victim == -1) delete this; // TODO: remove this from agent list in session
+    else this->infectNode(session, next_victim);
 }
