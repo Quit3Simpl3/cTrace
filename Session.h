@@ -18,7 +18,7 @@ class Session{
 public:
     Session();
     Session(const std::string& path); // DO NOT CHANGE!
-    
+
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
     void setGraph(const Graph& graph); // DO NOT CHANGE!
@@ -27,6 +27,7 @@ public:
     int dequeueInfected(); // DO NOT CHANGE!
     TreeType getTreeType() const; // DO NOT CHANGE!
     Graph getGraph();
+    int getCycle();
 
 private:
     Graph g; // DO NOT CHANGE!
@@ -34,6 +35,11 @@ private:
     std::vector<Agent*> agents; // DO NOT CHANGE!
     std::vector<std::vector<int>> matrix;
     queue<int> infectedQ;
+    bool checkStopCondition();
+    void updateCycle();
+    void createViruses(const vector<int>& nodes);
+    void createContactTracers(int contact_tracers);
+    int cycle;
 };
 
 #endif

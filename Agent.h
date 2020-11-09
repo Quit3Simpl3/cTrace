@@ -28,11 +28,13 @@ public:
     Virus(int nodeInd); // DO NOT CHANGE!
 
     virtual void act(Session& session); // DO NOT CHANGE!
+    void infectNode(Session& session);
     void infectNode(Session& session, int node);
     int findNextVictim(Session& session);
 
 private:
     const int nodeInd; // DO NOT CHANGE!
+    bool is_active=true; // Whether Virus.act() should run
 };
 
 #endif

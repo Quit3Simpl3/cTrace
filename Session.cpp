@@ -57,24 +57,57 @@ Session::Session(const std::string &path) {
     this->matrix = matrix;
 
     // parse json to viruses:
-    vector<int> viruses = json_to_viruses(j);
-    // todo: create agents from viruses
+    vector<int> virus_nodes = json_to_viruses(j);
+    this->createViruses(virus_nodes);
 
     // parse json to contact tracers:
     int contact_tracers = json_to_tracers(j);
-    // todo: create agents from contact_tracers
+    this->createContactTracers(contact_tracers);
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
+    // reset cycle to 0:
+    this->cycle = 0;
+}
+
+void Session::createViruses(const vector<int>& nodes) {
+    for (int node : nodes) {
+        Agent* virus = new Virus(node); // create new Virus agent
+        this->g.occupyNode(node);
+        this->addAgent(*virus); // add the new agent to the agents vector
+    }
+}
+
+void Session::createContactTracers(int contact_tracers) {
+    for (int i = 0; i < contact_tracers; ++i) {
+        Agent* contact_tracer = new ContactTracer(); // create new contactTracer agent
+        this->addAgent(*contact_tracer); // add the new agent to the agents vector
+    }
+}
+
+bool Session::checkStopCondition() {
+    return false;
+}
+
+void Session::updateCycle() {
+    this->cycle++;
 }
 
 void Session::simulate() {
-    cout << this->matrix.size() << endl;
+    cout << "Number of nodes: " << this->matrix.size() << endl;
     cout << "Starting simulation..." << endl;
+    //while(!this->checkStopCondition()) {
+    for (int i = 0; i < 10; ++i) {
+        for (auto agent : this->agents) { // iterate over all active agents
+            agent->act(*this);
+        }
+        this->updateCycle(); // cycle++
+    }
+    //}
 }
 
 void Session::addAgent(const Agent& agent) {
-    // todo: add agent to this->agents
+    this->agents.push_back((Agent*)&agent); // TODO: handle deleting of agent object
 }
 
 void Session::setGraph(const Graph &graph) {
@@ -83,6 +116,7 @@ void Session::setGraph(const Graph &graph) {
 
 void Session::enqueueInfected(int node) {
     this->infectedQ.push(node);
+    // maybe handle graph here?
 }
 
 int Session::dequeueInfected() {
@@ -101,5 +135,9 @@ TreeType Session::getTreeType() const {
 }
 
 Graph Session::getGraph() {
-    return Graph(this->g); // TODO: why not 'return this-g;'?
+    return Graph(this->g); // TODO: why not 'return this->g;'?
+}
+
+int Session::getCycle() {
+    return this->cycle;
 }

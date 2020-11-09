@@ -16,6 +16,10 @@ Graph::Graph(std::vector<std::vector<int>> matrix) {
     this->infected_counter = 0; // no vertices are currently infected
 }
 
+void Graph::occupyNode(int nodeInd) {
+    this->nodes_state[nodeInd] = Occupied;
+}
+
 void Graph::infectNode(int nodeInd) {
     this->nodes_state[nodeInd] = Infected; // set node as infected
     this->infected_counter++; // Update infected_counter
