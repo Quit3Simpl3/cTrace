@@ -2,7 +2,7 @@
 #define TREE_H_
 #include "Session.h"
 #include <vector>
-
+#include <array>
 using namespace std;
 
 class Session;
@@ -17,7 +17,7 @@ public:
     static Tree* BFS(const Session& session,int rootLabel);
     int mynode();
     vector<Tree*> mychild();
-    void MaxtraceTree(vector<int [3]> &track_tree, int high);
+    void MaxtraceTree(vector<array<int,3>> &track_tree, int high);
 
 private:
     int node; // DO NOT CHANGE!

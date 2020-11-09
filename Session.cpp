@@ -4,6 +4,7 @@
 #include "Graph.h"
 #include "Agent.h"
 #include <fstream>
+#include "Tree.h"
 
 using namespace std;
 using namespace nlohmann;
@@ -74,6 +75,9 @@ Session::Session(const std::string &path) {
 void Session::simulate() {
     cout << this->matrix.size() << endl;
     cout << "Starting simulation..." << endl;
+    Tree *t = Tree :: BFS(*this,0);
+    int answer = t->traceTree();
+    cout<<answer<<endl;
 }
 
 void Session::addAgent(const Agent& agent) {

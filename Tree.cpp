@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include "Session.h"
+#include <array>
 
 
 using namespace std;
@@ -19,7 +20,8 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
     if(temp.getTreeType() == MaxRank) {
             return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
-            return (new CycleTree(rootLabel,session.getcyclenum()));
+       //     return (new CycleTree(rootLabel,session.getcyclenum()));
+          return (new CycleTree(rootLabel,0));
     }else
             return (new RootTree(rootLabel));
 }
@@ -74,9 +76,9 @@ int CycleTree::traceTree() {
     if(currCycle == 0 || mychild().empty()) {
         return mynode();
     } else {
-        Tree *cycle_round = mychild()[0];
-        for (int i = 0; !(cycle_round->mychild().empty())&& i < currCycle; ++i) {
-            Tree *cycle_round = cycle_round->mychild()[0];
+        Tree *cycle_round= mychild()[0];
+        for (int i = 1; !(cycle_round->mychild().empty())&& i < currCycle; ++i) {
+            cycle_round = cycle_round->mychild()[0];
         };
         return cycle_round->mynode();
     }
@@ -88,14 +90,13 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int MaxRankTree::traceTree() {
-
     if (mychild().empty()) {
         return mynode();
     }else {
-        vector<int [3]> track_tree;
+        vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
                 MaxtraceTree(track_tree,0); //i will change to static
         int point = 0;
-        for (int i = 1; i<track_tree->size();++i) {
+        for (int i = 1; i<track_tree.size();++i) {
             if (track_tree[i][0]>track_tree[point][0]){
                 point = i;
             }else if (track_tree[i][0]==track_tree[point][0]){
@@ -107,19 +108,16 @@ int MaxRankTree::traceTree() {
         return track_tree[point][2];
         }
 }
-void Tree::MaxtraceTree (vector<int [3]> &track_tree, int high) {
+void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
-    track_tree.push_back({mysize, high, mynode()});
+    track_tree.push_back({(int)mysize, (int)high, (int)mynode()});
     if (mychild().empty()) {
-        return;
     } else {
       for (int i = 0; i < mysize; ++i) {
         children[i]->MaxtraceTree(track_tree, high + 1);
         }
-      return;
     }
 }
-
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 
