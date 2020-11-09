@@ -5,6 +5,9 @@
 #include <string>
 #include <queue>
 #include "Graph.h"
+#include "json.hpp"
+
+using namespace nlohmann;
 
 class Agent; // DO NOT CHANGE!
 
@@ -28,6 +31,7 @@ public:
     TreeType getTreeType() const; // DO NOT CHANGE!
     Graph getGraph();
     int getCycle();
+    void json_to_agents(json j);
 
 private:
     Graph g; // DO NOT CHANGE!

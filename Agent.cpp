@@ -60,11 +60,18 @@ void Virus::act(Session &session) {
      * (1) Infect nodeInd and spread to first neighbor
      * (2) Spread to next neighbor
      * (3) Delete self */
-
     if (!this->is_active) return; // checks if the virus is active.
     if (!session.getGraph().isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
     // Continue to next victim:
     int next_victim = this->findNextVictim(session);
-    if (next_victim == -1) delete this; // TODO: remove this from agent list in session
+    if (next_victim == -1) this->deactivate();
     else this->infectNode(session, next_victim);
+}
+
+Virus::~Virus() { // delete virus object
+    // TODO
+}
+
+void Virus::deactivate() {
+    this->is_active = false;
 }

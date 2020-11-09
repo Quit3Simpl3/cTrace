@@ -13,13 +13,11 @@ vector<vector<int>> json_to_adjacency_matrix(json j) {
     return matrix;
 }
 
-vector<int> json_to_agents(json j) {
+void Session::json_to_agents(json j) {
     vector<pair<string, int>> agents_matrix = j.at("agents");
-    vector<int> agents;
-    for (pair<string, int> agent : agents_matrix) {
-        agents.push_back(agent.second); // push the vertices' numbers into agents (ContactTracers are always -1)
+    for (pair<string, int> a : agents_matrix) {
+        this->createAgent(a.second); // create the necessary agent
     }
-    return agents;
 }
 
 void Session::createAgent(int start_node) {
@@ -51,10 +49,7 @@ Session::Session(const std::string &path) {
     setGraph(Graph(json_to_adjacency_matrix(j)));
 
     // Add agents to Session by their order in json config file:
-    vector<int> agents_nodes = json_to_agents(j); // parse json to agents
-    for (int start_node : agents_nodes) { // create agents by order of appearance
-        createAgent(start_node);
-    }
+    this->json_to_agents(j); // parse json to agents
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
@@ -83,6 +78,7 @@ void Session::simulate() {
 }
 
 void Session::addAgent(const Agent& agent) {
+    Agent* a = new Virus(agent); // TODO: clone agent from reference
     this->agents.push_back((Agent*)&agent); // TODO: handle deleting of agent object
 }
 

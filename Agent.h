@@ -26,10 +26,12 @@ private:
 class Virus: public Agent{
 public:
     Virus(int nodeInd); // DO NOT CHANGE!
+    ~Virus();
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void infectNode(Session& session);
     void infectNode(Session& session, int node);
+    void deactivate();
 
 private:
     const int nodeInd; // DO NOT CHANGE!
