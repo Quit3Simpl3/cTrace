@@ -92,7 +92,8 @@ int MaxRankTree::traceTree() {
     if (mychild().empty()) {
         return mynode();
     }else {
-        vector<int [3]> *track_tree=MaxtraceTree(track_tree,0); //i will change to static
+        vector<int [3]> track_tree;
+                MaxtraceTree(track_tree,0); //i will change to static
         int point = 0;
         for (int i = 1; i<track_tree->size();++i) {
             if (track_tree[i][0]>track_tree[point][0]){
@@ -103,21 +104,20 @@ int MaxRankTree::traceTree() {
                 }
             }
         }
-        return *track_tree[point][2];
+        return track_tree[point][2];
         }
 }
-vector<int [3]>* Tree::MaxtraceTree (vector<int [3]> *track_tree, int high) {
+void Tree::MaxtraceTree (vector<int [3]> &track_tree, int high) {
     int mysize = children.size();
-    int me [3] = {mysize,high,mynode()};
-    track_tree->push_back(me);
+    track_tree.push_back({mysize, high, mynode()});
     if (mychild().empty()) {
-        return track_tree;
-    }else
-        for (int i = 0; i<mysize;++i) {
-            children[i]->MaxtraceTree(track_tree, high+1);
-
+        return;
+    } else {
+      for (int i = 0; i < mysize; ++i) {
+        children[i]->MaxtraceTree(track_tree, high + 1);
         }
-    return track_tree;
+      return;
+    }
 }
 
 
