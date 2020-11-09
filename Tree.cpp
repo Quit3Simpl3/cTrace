@@ -42,7 +42,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g.getegde(tmptree->mynode());
+        const vector<int>& is_edge = g.getEdge(tmptree->mynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;

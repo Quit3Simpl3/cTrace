@@ -8,33 +8,10 @@
 using namespace std;
 using namespace nlohmann;
 
-vector<vector<int>> json_to_matrix(json j) {
+vector<vector<int>> json_to_adjacency_matrix(json j) {
     vector<vector<int>> matrix = j.at("graph");
-
     return matrix;
 }
-
-/*vector<int> json_to_viruses(json j) {
-    vector<int> viruses;
-    for (int i = 0; i < j.at("agents").size(); ++i) {
-        if (j.at("agents").at(i)[0] == "V") {
-            viruses.push_back(j.at("agents").at(i)[1]);
-        }
-    }
-
-    return viruses;
-}
-
-int json_to_tracers(json j) {
-    int contact_tracers = 0;
-    for (int i = 0; i < j.at("agents").size(); ++i) {
-        if (j.at("agents").at(i) == "C") {
-            contact_tracers++;
-        }
-    }
-
-    return contact_tracers;
-}*/
 
 vector<int> json_to_agents(json j) {
     vector<pair<string, int>> agents_matrix = j.at("agents");
@@ -71,8 +48,7 @@ Session::Session(const std::string &path) {
     fstream stream(path);
     json j;
     stream >> j;
-    Graph g = Graph(json_to_matrix(j));
-    setGraph(g);
+    setGraph(Graph(json_to_adjacency_matrix(j)));
 
     // Add agents to Session by their order in json config file:
     vector<int> agents_nodes = json_to_agents(j); // parse json to agents

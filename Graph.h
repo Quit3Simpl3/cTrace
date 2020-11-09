@@ -21,16 +21,20 @@ public:
     void occupyNode(int nodeInd);
     bool isVirusFree(int nodeInd);
     vector<int> getNeighbors(int node);
+    int getInfectedCounter() const;
 
     int size() const;
-    vector<int> getegde(int k) const;
+    vector<int> getEdge(int k) const;
 
     void removeEdge(int u, int v);
     
 private:
     std::vector<std::vector<int>> edges; // DO NOT CHANGE!
     std::vector<InfectionState> nodes_state;
-    int infected_counter;
+    void _infectedCounterUp();
+    void _infectedCounterDown();
+    void _setInfectedCounter(int val);
+    int _infected_counter;
 };
 
 #endif
