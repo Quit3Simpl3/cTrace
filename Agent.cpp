@@ -27,6 +27,8 @@ void ContactTracer::removeAllEdges(Session& session, int node) {
     }
 }
 
+//ContactTracer::ContactTracer(const ContactTracer &contactTracer) {}
+
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
 
 void Virus::infectNode(Session& session) {
@@ -74,4 +76,32 @@ Virus::~Virus() { // delete virus object
 
 void Virus::deactivate() {
     this->is_active = false;
+}
+
+/*Agent* ContactTracer::clone() const {
+    return new ContactTracer();
+}
+
+Agent* Virus::clone() const {
+    int node = this->getNode();
+    return new Virus(node);
+}*/
+
+int Virus::getNode() const {
+    return this->nodeInd;
+}
+
+/*Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {}*/
+
+Agent* Virus::clone() const {
+    int node = this->getNode();
+    return new Virus(node);
+}
+
+Agent* ContactTracer::clone() const {
+    return new ContactTracer();
+}
+
+Agent *Agent::clone() const {
+    return nullptr;
 }

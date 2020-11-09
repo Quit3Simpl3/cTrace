@@ -15,9 +15,13 @@ vector<vector<int>> json_to_adjacency_matrix(json j) {
 
 void Session::json_to_agents(json j) {
     vector<pair<string, int>> agents_matrix = j.at("agents");
-    for (pair<string, int> a : agents_matrix) {
-        this->createAgent(a.second); // create the necessary agent
+    cout << "agents_matrix.size() = " << agents_matrix.size() << endl;
+    for (int i = 0; i < agents_matrix.size(); ++i) {
+        this->createAgent(agents_matrix[i].second);
     }
+    /*for (pair<string, int> a : agents_matrix) {
+        this->createAgent(a.second); // create the necessary agent
+    }*/
 }
 
 void Session::createAgent(int start_node) {
@@ -78,8 +82,7 @@ void Session::simulate() {
 }
 
 void Session::addAgent(const Agent& agent) {
-    Agent* a = new Virus(agent); // TODO: clone agent from reference
-    this->agents.push_back((Agent*)&agent); // TODO: handle deleting of agent object
+    this->agents.push_back(agent.clone());
 }
 
 void Session::setGraph(const Graph &graph) {
