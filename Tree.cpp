@@ -16,12 +16,12 @@ void Tree::addChild(const Tree &child)  {
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    Session temp = session; //need to fix the syntax..
+    Session temp = session; //need to fix the syntax.
     if(temp.getTreeType() == MaxRank) {
             return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
        //     return (new CycleTree(rootLabel,session.getcyclenum()));
-          return (new CycleTree(rootLabel,0));
+          return (new CycleTree(rootLabel,1));
     }else
             return (new RootTree(rootLabel));
 }
@@ -43,7 +43,7 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g.getegde(tmptree->mynode());
+        const vector<int>& is_edge = g.getegde(tmptree->getmynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;
@@ -58,11 +58,11 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     return father_tree;
 }
 
-int Tree::mynode() {
+int Tree::getmynode() {
     return node;
 }
 
-vector<Tree *> Tree::mychild() {
+vector<Tree *> Tree::getmychildren() {
     return children;
 }
 
@@ -73,14 +73,14 @@ CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle
 }
 
 int CycleTree::traceTree() {
-    if(currCycle == 0 || mychild().empty()) {
-        return mynode();
+    if(currCycle == 0 || getmychildren().empty()) {
+        return getmynode();
     } else {
-        Tree *cycle_round= mychild()[0];
-        for (int i = 1; !(cycle_round->mychild().empty())&& i < currCycle; ++i) {
-            cycle_round = cycle_round->mychild()[0];
+        Tree *cycle_round= getmychildren()[0];
+        for (int i = 1; !(cycle_round->getmychildren().empty())&& i < currCycle; ++i) {
+            cycle_round = cycle_round->getmychildren()[0];
         };
-        return cycle_round->mynode();
+        return cycle_round->getmynode();
     }
     ; // TODO: trace the bfs tree
 }
@@ -90,8 +90,8 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int MaxRankTree::traceTree() {
-    if (mychild().empty()) {
-        return mynode();
+    if (getmychildren().empty()) {
+        return getmynode();
     }else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
                 MaxtraceTree(track_tree,0); //i will change to static
@@ -110,8 +110,8 @@ int MaxRankTree::traceTree() {
 }
 void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
-    track_tree.push_back({(int)mysize, (int)high, (int)mynode()});
-    if (mychild().empty()) {
+    track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
+    if (getmychildren().empty()) {
     } else {
       for (int i = 0; i < mysize; ++i) {
         children[i]->MaxtraceTree(track_tree, high + 1);
@@ -124,6 +124,6 @@ RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int RootTree::traceTree() {
-    return mynode();
+    return getmynode();
 
 }
