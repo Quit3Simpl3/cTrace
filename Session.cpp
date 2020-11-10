@@ -4,6 +4,7 @@
 #include "Graph.h"
 #include "Agent.h"
 #include <fstream>
+#include "Tree.h"
 
 using namespace std;
 using namespace nlohmann;
@@ -54,6 +55,7 @@ Session::Session(const std::string &path) {
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
+
     // reset cycle to 0:
     this->cycle = 0;
 }
@@ -112,4 +114,8 @@ Graph Session::getGraph() {
 
 int Session::getCycle() {
     return this->cycle;
+}
+
+int Session::getcyclenum() const{
+    return cyclenum;
 }
