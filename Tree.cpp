@@ -2,12 +2,13 @@
 #include <queue>
 #include <vector>
 #include "Session.h"
+#include <array>
 
 
 using namespace std;
 
-Tree::Tree(int rootLabel) {
-    this->node = rootLabel;
+Tree::Tree(int rootLabel) : node(rootLabel) , children() {
+
 }
 
 void Tree::addChild(const Tree &child)  {
@@ -15,11 +16,12 @@ void Tree::addChild(const Tree &child)  {
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    Session temp = session; //need to fix the syntax..
+    Session temp = session; //need to fix the syntax.
     if(temp.getTreeType() == MaxRank) {
             return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
-            return (new CycleTree(rootLabel,rootLabel));
+       //     return (new CycleTree(rootLabel,session.getcyclenum()));
+          return (new CycleTree(rootLabel,1));
     }else
             return (new RootTree(rootLabel));
 }
@@ -28,10 +30,9 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    const Graph& g = session.getGraph(); //need to fix the syntax..
+    const Graph& g = session.getGraph();
 
-    int node_size = g.size();
-    for (int i=0;  i < node_size;++i ) { //initialization the vector
+    for (int i=0;  i < g.size();++i ) { //initialization the vector
         child_is_in.push_back(true);
     }
     Tree *father_tree = Tree::createTree(session, rootLabel);
@@ -42,7 +43,7 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g.getegde(tmptree->mynode());
+        const vector<int>& is_edge = g.getegde(tmptree->getmynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;
@@ -57,8 +58,12 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     return father_tree;
 }
 
-int Tree::mynode() {
+int Tree::getmynode() {
     return node;
+}
+
+vector<Tree *> Tree::getmychildren() {
+    return children;
 }
 
 
@@ -68,7 +73,16 @@ CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle
 }
 
 int CycleTree::traceTree() {
-    return 0; // TODO: trace the bfs tree
+    if(currCycle == 0 || getmychildren().empty()) {
+        return getmynode();
+    } else {
+        Tree *cycle_round= getmychildren()[0];
+        for (int i = 1; !(cycle_round->getmychildren().empty())&& i < currCycle; ++i) {
+            cycle_round = cycle_round->getmychildren()[0];
+        };
+        return cycle_round->getmynode();
+    }
+    ; // TODO: trace the bfs tree
 }
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
@@ -76,8 +90,33 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int MaxRankTree::traceTree() {
-
-    return 0;
+    if (getmychildren().empty()) {
+        return getmynode();
+    }else {
+        vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
+                MaxtraceTree(track_tree,0); //i will change to static
+        int point = 0;
+        for (int i = 1; i<track_tree.size();++i) {
+            if (track_tree[i][0]>track_tree[point][0]){
+                point = i;
+            }else if (track_tree[i][0]==track_tree[point][0]){
+                if(track_tree[i][1]<track_tree[point][1]) {
+                    point = i;
+                }
+            }
+        }
+        return track_tree[point][2];
+        }
+}
+void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
+    int mysize = children.size();
+    track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
+    if (getmychildren().empty()) {
+    } else {
+      for (int i = 0; i < mysize; ++i) {
+        children[i]->MaxtraceTree(track_tree, high + 1);
+        }
+    }
 }
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
@@ -85,5 +124,6 @@ RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 }
 
 int RootTree::traceTree() {
-    return 0;
+    return getmynode();
+
 }

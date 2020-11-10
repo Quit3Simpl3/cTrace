@@ -4,6 +4,7 @@
 #include "Graph.h"
 #include "Agent.h"
 #include <fstream>
+#include "Tree.h"
 
 using namespace std;
 using namespace nlohmann;
@@ -66,11 +67,17 @@ Session::Session(const std::string &path) {
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
+
+
+    cyclenum = 0;  //TODO: need to think if this is the right place for it
 }
 
 void Session::simulate() {
     cout << this->matrix.size() << endl;
     cout << "Starting simulation..." << endl;
+    Tree *t = Tree :: BFS(*this,0);
+    int answer = t->traceTree();
+    cout<<answer<<endl;
 }
 
 void Session::addAgent(const Agent& agent) {
@@ -95,4 +102,8 @@ TreeType Session::getTreeType() const {
 
 Graph Session::getGraph() const {
     return Graph(this->g);
+}
+
+int Session::getcyclenum() const{
+    return cyclenum;
 }
