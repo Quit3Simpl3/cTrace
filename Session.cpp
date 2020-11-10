@@ -15,13 +15,9 @@ vector<vector<int>> json_to_adjacency_matrix(json j) {
 
 void Session::json_to_agents(json j) {
     vector<pair<string, int>> agents_matrix = j.at("agents");
-    cout << "agents_matrix.size() = " << agents_matrix.size() << endl;
-    for (int i = 0; i < agents_matrix.size(); ++i) {
-        this->createAgent(agents_matrix[i].second);
-    }
-    /*for (pair<string, int> a : agents_matrix) {
+    for (pair<string, int> a : agents_matrix) {
         this->createAgent(a.second); // create the necessary agent
-    }*/
+    }
 }
 
 void Session::createAgent(int start_node) {
@@ -34,6 +30,7 @@ void Session::createAgent(int start_node) {
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
     this->addAgent(*agent); // add the new agent to the agents vector
+    // TODO: make sure everything is deleted
 }
 
 TreeType json_to_treeType(json j) {
