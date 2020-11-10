@@ -70,3 +70,16 @@ void Graph::_infectedCounterUp() {
     int count = this->getInfectedCounter() + 1;
     this->_setInfectedCounter(count);
 }
+
+std::vector<std::vector<int>> Graph::getedges() {
+    return edges;
+}
+
+std::vector<int> Graph::getinfections() {
+    vector<int> myinfectons;
+    for (int i = 0; i<this->size(); i++){
+        if (infections[i] == 1)
+            myinfectons.push_back(i);
+    }
+    return myinfectons;
+}

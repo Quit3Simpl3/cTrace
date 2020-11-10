@@ -21,7 +21,7 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
             return (new MaxRankTree(rootLabel));
    } else if (temp.getTreeType() == Cycle) {
        //     return (new CycleTree(rootLabel,session.getcyclenum()));
-          return (new CycleTree(rootLabel,1));
+          return (new CycleTree(rootLabel, session.getCycle()));
     }else
             return (new RootTree(rootLabel));
 }

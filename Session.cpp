@@ -72,7 +72,7 @@ void Session::simulate() {
     cout << "Starting simulation..." << endl;
     //while(!this->checkStopCondition()) {
     Session* s = this;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         // create tmp_agents vector -> run for over tmp_agents
         vector<Agent*> tmp_agents(this->agents);
         for (auto agent : tmp_agents) { // iterate over all active agents
@@ -82,6 +82,11 @@ void Session::simulate() {
         this->updateCycle(); // cycle++
     }
     //}  //
+    json answer;
+    answer["graph"] = getGraph()->getedges();
+    answer["infected"] = getGraph()->getinfections();
+    ofstream myAnserIs("./output.json");
+    myAnserIs << answer;
 }
 
 void Session::addAgent(const Agent& agent) {
@@ -117,6 +122,6 @@ Graph* Session::getGraph() {
     return ptr_g;
 }
 
-int Session::getCycle() {
+    int Session::getCycle() const  {
     return this->cycle;
 }

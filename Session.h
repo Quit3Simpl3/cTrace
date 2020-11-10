@@ -30,7 +30,7 @@ public:
     int dequeueInfected(); // DO NOT CHANGE!
     TreeType getTreeType() const; // DO NOT CHANGE!
     Graph* getGraph();
-    int getCycle();
+    int getCycle() const;
     void json_to_agents(json j);
 
 private:
