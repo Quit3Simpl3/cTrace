@@ -81,7 +81,7 @@ void Session::simulate() {
         }
         this->updateCycle(); // cycle++
     }
-    //}
+    //}  //
 }
 
 void Session::addAgent(const Agent& agent) {
