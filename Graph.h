@@ -5,12 +5,6 @@
 
 using namespace std;
 
-enum InfectionState{
-    VirusFree,
-    Infected,
-    Occupied
-};
-
 class Graph{
 public:
     Graph(); // TODO: Make sure we REALLY need a default constructor
@@ -30,7 +24,8 @@ public:
     
 private:
     std::vector<std::vector<int>> edges; // DO NOT CHANGE!
-    std::vector<InfectionState> nodes_state;
+    std::vector<int> infections;
+    std::vector<int> virus_free;
     void _infectedCounterUp();
     void _infectedCounterDown();
     void _setInfectedCounter(int val);

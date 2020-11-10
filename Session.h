@@ -29,7 +29,7 @@ public:
     void enqueueInfected(int); // DO NOT CHANGE!
     int dequeueInfected(); // DO NOT CHANGE!
     TreeType getTreeType() const; // DO NOT CHANGE!
-    Graph& getGraph();
+    Graph* getGraph();
     int getCycle();
     void json_to_agents(json j);
 

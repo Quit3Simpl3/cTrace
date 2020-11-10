@@ -112,8 +112,9 @@ TreeType Session::getTreeType() const {
     return this->treeType;
 }
 
-Graph& Session::getGraph() {
-    return this->g;
+Graph* Session::getGraph() {
+    Graph* ptr_g = &(this->g);
+    return ptr_g;
 }
 
 int Session::getCycle() {

@@ -8,26 +8,29 @@ using namespace std;
 Graph::Graph(std::vector<std::vector<int>> matrix) {
     cout << "I'm gonna start building your graph now..." << endl; // delme
     this->edges = matrix; // rename matrix to this.edges
-    this->nodes_state = vector<InfectionState>(this->edges.size(), VirusFree);
+    this->infections = vector<int>(this->edges.size(), 0);
+    this->virus_free = vector<int>(this->edges.size(), 1);
     this->_setInfectedCounter(0); // no vertices are currently infected
 }
 
 void Graph::occupyNode(int nodeInd) {
-    this->nodes_state[nodeInd] = Occupied;
+    this->virus_free[nodeInd] = 0;
 }
 
 void Graph::infectNode(int nodeInd) {
-    this->nodes_state[nodeInd] = Infected; // set node as infected
+    this->infections[nodeInd] = 1;
     this->_infectedCounterUp(); // Update infected_counter
 }
 
 bool Graph::isInfected(int nodeInd) {
-    return (this->nodes_state[nodeInd] == Infected);
+    return (this->infections[nodeInd]==1);
 }
 
-Graph::Graph() {
-    //TODO: do we really need a default constructor?
+bool Graph::isVirusFree(int nodeInd) {
+    return (this->virus_free[nodeInd]==1);
 }
+
+Graph::Graph() {/* default constructor */}
 
 int Graph::size() const {
     return (this->edges.size());
@@ -42,14 +45,10 @@ void Graph::removeEdge(int u, int v) { // remove the edge {u,v} from this->edges
     this->edges[v][u] = 0; // removes the edge from v's neighbors list
 }
 
-bool Graph::isVirusFree(int nodeInd) {
-    return (this->nodes_state[nodeInd] == VirusFree);
-}
-
 vector<int> Graph::getNeighbors(int node) {
     vector<int> neighbors;
-    for (int i : this->edges[node]) {
-        if (i == 1) neighbors.push_back(i);
+    for (int i = 0; i < this->edges[node].size(); ++i) { // TODO: don't iterate if no neighbors
+        if (this->edges[node][i] == 1) neighbors.push_back(i);
     }
     return neighbors;
 }

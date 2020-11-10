@@ -22,8 +22,8 @@ void ContactTracer::act(Session& session) {
 }
 
 void ContactTracer::removeAllEdges(Session& session, int node) {
-    for (int i = 0; i < session.getGraph().size(); ++i) { // iterates on all vertices: {0,1,2,...}
-        session.getGraph().removeEdge(node, i); // sets all of u's row in edges vector to 0
+    for (int i = 0; i < session.getGraph()->size(); ++i) { // iterates on all vertices: {0,1,2,...}
+        session.getGraph()->removeEdge(node, i); // sets all of u's row in edges vector to 0
     }
 }
 
@@ -32,26 +32,26 @@ void ContactTracer::removeAllEdges(Session& session, int node) {
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
 
 void Virus::infectNode(Session& session) { // a Virus only infects its host
-    Graph g = session.getGraph();
-    g.infectNode(this->nodeInd);
+    Graph* g = session.getGraph();
+    g->infectNode(this->nodeInd);
     session.enqueueInfected(this->nodeInd);
 }
 
 void Virus::occupy(Session& session, int node) {
     // handle session and graph
-    Graph g = session.getGraph();
-    g.occupyNode(node);
+    Graph* g = session.getGraph();
+    g->occupyNode(node);
     session.addAgent(*(new Virus(node))); // spread (clone self) to neighbor node
 }
 
 int Virus::findNextVictim(Session& session) { // make a copy to the next victim, and then look for another one
-    Graph g = session.getGraph();
-    vector<int> neighbors = g.getNeighbors(this->nodeInd);
-    for (int neighbor : neighbors) {
-        if (g.isVirusFree(neighbor)) return neighbor;
+    Graph* g = session.getGraph();
+    vector<int> neighbors = g->getNeighbors(this->nodeInd);
+    for (int i = 0; i < neighbors.size(); ++i) {
+        if (g->isVirusFree(neighbors[i])) return neighbors[i];
     }
     // If no next victim, do:
-    g.occupyNode(this->nodeInd); // Change this node's state to 'Occupied' instead of 'Infected'
+    g->occupyNode(this->nodeInd); // Change this node's state to 'Occupied' instead of 'Infected'
     return -1; // Return 'no next victim' signal
 }
 
@@ -61,7 +61,8 @@ void Virus::act(Session &session) {
      * (2) Spread to next neighbor
      * (3) Delete self */
     if (!this->is_active) return; // checks if the virus is active.
-    if (!session.getGraph().isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
+    if (session.getGraph()->isVirusFree(this->nodeInd)) occupy(session, this->nodeInd);
+    if (!session.getGraph()->isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
     // Continue to next victim:
     int next_victim = this->findNextVictim(session);
     if (next_victim == -1) this->deactivate();
