@@ -26,11 +26,11 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
             return (new RootTree(rootLabel));
 }
 
-Tree *Tree::BFS(const Session& session, int rootLabel) {
+Tree *Tree::BFS(Session& session, int rootLabel) {
     queue <Tree*> child_pos;  //for running the BFS
     vector<bool> child_is_in; // to know if the node is in the tree;
 
-    const Graph& g = session.getGraph();
+    Graph& g = session.getGraph();
 
     for (int i=0;  i < g.size();++i ) { //initialization the vector
         child_is_in.push_back(true);
@@ -43,7 +43,7 @@ Tree *Tree::BFS(const Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g.getegde(tmptree->getmynode());
+        const vector<int>& is_edge = g.getEdge(tmptree->getmynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;

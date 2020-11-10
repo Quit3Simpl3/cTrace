@@ -9,32 +9,29 @@
 using namespace std;
 using namespace nlohmann;
 
-vector<vector<int>> json_to_matrix(json j) {
+vector<vector<int>> json_to_adjacency_matrix(json j) {
     vector<vector<int>> matrix = j.at("graph");
-
     return matrix;
 }
 
-vector<int> json_to_viruses(json j) {
-    vector<int> viruses;
-    for (int i = 0; i < j.at("agents").size(); ++i) {
-        if (j.at("agents").at(i)[0] == "V") {
-            viruses.push_back(j.at("agents").at(i)[1]);
-        }
+void Session::json_to_agents(json j) {
+    vector<pair<string, int>> agents_matrix = j.at("agents");
+    for (pair<string, int> a : agents_matrix) {
+        this->createAgent(a.second); // create the necessary agent
     }
-
-    return viruses;
 }
 
-int json_to_tracers(json j) {
-    int contact_tracers = 0;
-    for (int i = 0; i < j.at("agents").size(); ++i) {
-        if (j.at("agents").at(i) == "C") {
-            contact_tracers++;
-        }
+void Session::createAgent(int start_node) {
+    Agent* agent;
+    if (start_node == -1) {
+        agent = new ContactTracer(); // create a new contactTracer agent
     }
-
-    return contact_tracers;
+    else {
+        agent = new Virus(start_node); // create a new Virus agent
+        this->g.occupyNode(start_node); // mark start_node as occupied
+    }
+    this->addAgent(*agent); // add the new agent to the agents vector
+    // TODO: make sure everything is deleted
 }
 
 TreeType json_to_treeType(json j) {
@@ -44,64 +41,79 @@ TreeType json_to_treeType(json j) {
     else return Root; // maybe if(..."R")?
 }
 
-Session::Session() { // default constructor - is this REALLY necessary?
-
-}
+Session::Session() {/*default constructor*/}
 
 Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
     fstream stream(path);
     json j;
     stream >> j;
-    Graph g = Graph(json_to_matrix(j));
-    setGraph(g);
-    this->matrix = matrix;
+    setGraph(Graph(json_to_adjacency_matrix(j)));
 
-    // parse json to viruses:
-    vector<int> viruses = json_to_viruses(j);
-    // todo: create agents from viruses
-
-    // parse json to contact tracers:
-    int contact_tracers = json_to_tracers(j);
-    // todo: create agents from contact_tracers
+    // Add agents to Session by their order in json config file:
+    this->json_to_agents(j); // parse json to agents
 
     // set treeType from json:
     this->treeType = json_to_treeType(j);
 
+    // reset cycle to 0:
+    this->cycle = 0;
+}
 
-    cyclenum = 0;  //TODO: need to think if this is the right place for it
+bool Session::checkStopCondition() {
+    return false;
+}
+
+void Session::updateCycle() {
+    this->cycle++;
 }
 
 void Session::simulate() {
-    cout << this->matrix.size() << endl;
     cout << "Starting simulation..." << endl;
-    Tree *t = Tree :: BFS(*this,0);
-    int answer = t->traceTree();
-    cout<<answer<<endl;
+    //while(!this->checkStopCondition()) {
+    for (int i = 0; i < 10; ++i) {
+        for (auto agent : this->agents) { // iterate over all active agents
+            agent->act(*this);
+        }
+        this->updateCycle(); // cycle++
+    }
+    //}
 }
 
 void Session::addAgent(const Agent& agent) {
-    // todo: add agent to this->agents
+    this->agents.push_back(agent.clone());
 }
 
 void Session::setGraph(const Graph &graph) {
     this->g = graph; // todo: check move-constructor
 }
 
-void Session::enqueueInfected(int) {
-    // TODO
+void Session::enqueueInfected(int node) {
+    this->infectedQ.push(node);
+    // maybe handle graph here?
 }
 
 int Session::dequeueInfected() {
-    return 0; // TODO
+    if (this->infectedQ.empty()) { // handle empty queue
+        return -1;
+    }
+    else {
+        int node = this->infectedQ.front(); // get node at front of the queue
+        infectedQ.pop(); // delete node at front of the queue
+        return node;
+    }
 }
 
 TreeType Session::getTreeType() const {
     return this->treeType;
 }
 
-Graph Session::getGraph() const {
-    return Graph(this->g);
+Graph Session::getGraph() {
+    return Graph(this->g); // TODO: why not 'return this->g;'?
+}
+
+int Session::getCycle() {
+    return this->cycle;
 }
 
 int Session::getcyclenum() const{

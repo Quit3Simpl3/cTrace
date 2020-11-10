@@ -1,13 +1,9 @@
 #include "Agent.h"
 #include "Tree.h"
 
-Agent::Agent() {
-    // TODO
-}
+Agent::Agent() {}
 
-ContactTracer::ContactTracer() {
-    // TODO
-}
+ContactTracer::ContactTracer() {}
 
 int ContactTracer::dequeueInfected(Session& session) {
     return session.dequeueInfected();
@@ -18,21 +14,94 @@ void ContactTracer::act(Session& session) {
     // 2) create BFS by TreeType from node
     // 3) use treeTrace() to get the necessary node
     // 4) remove all the node's edges
-
-    this->start_node = this->dequeueInfected(session); // get new infected node from queue
-    Tree* bfs_tree = Tree::BFS(session, this->start_node);
+    int start_node = this->dequeueInfected(session); // get new infected node from queue
+    if (start_node == -1) return; // dequeueInfected returns -1 if empty
+    Tree* bfs_tree = Tree::BFS(session, start_node);
     int patient = bfs_tree->traceTree();
-    this->removeEdges(patient); // remove all the patient's edges
+    this->removeAllEdges(session, patient); // remove all the patient's edges
 }
 
-void ContactTracer::removeEdges(int node) {
-    // TODO: remove node's edges
+void ContactTracer::removeAllEdges(Session& session, int node) {
+    for (int i = 0; i < session.getGraph().size(); ++i) { // iterates on all vertices: {0,1,2,...}
+        session.getGraph().removeEdge(node, i); // sets all of u's row in edges vector to 0
+    }
 }
 
-Virus::Virus(int nodeInd) : nodeInd(nodeInd) {
-    // TODO
+//ContactTracer::ContactTracer(const ContactTracer &contactTracer) {}
+
+Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
+
+void Virus::infectNode(Session& session) {
+    this->infectNode(session, this->nodeInd);
+}
+
+void Virus::infectNode(Session& session, int node) {
+    // handle session and graph
+    Graph g = session.getGraph();
+    g.infectNode(node);
+    session.enqueueInfected(node);
+    // copy virus if node is neighbor
+    if (node != this->nodeInd) {
+        session.addAgent(*(new Virus(node))); // spread (clone self) to node
+    }
+}
+
+int Virus::findNextVictim(Session& session) { // make a copy to the next victim, and then look for another one
+    Graph g = session.getGraph();
+    vector<int> neighbors = g.getNeighbors(this->nodeInd);
+    for (int neighbor : neighbors) {
+        if (g.isVirusFree(neighbor)) return neighbor;
+    }
+    // If no next victim, do:
+    g.occupyNode(this->nodeInd); // Change this node's state to 'Occupied' instead of 'Infected'
+    return -1; // Return 'no next victim' signal
 }
 
 void Virus::act(Session &session) {
+    /* action types (each occurs in a single iteration):
+     * (1) Infect nodeInd and spread to first neighbor
+     * (2) Spread to next neighbor
+     * (3) Delete self */
+    if (!this->is_active) return; // checks if the virus is active.
+    if (!session.getGraph().isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
+    // Continue to next victim:
+    int next_victim = this->findNextVictim(session);
+    if (next_victim == -1) this->deactivate();
+    else this->infectNode(session, next_victim);
+}
+
+Virus::~Virus() { // delete virus object
     // TODO
+}
+
+void Virus::deactivate() {
+    this->is_active = false;
+}
+
+/*Agent* ContactTracer::clone() const {
+    return new ContactTracer();
+}
+
+Agent* Virus::clone() const {
+    int node = this->getNode();
+    return new Virus(node);
+}*/
+
+int Virus::getNode() const {
+    return this->nodeInd;
+}
+
+/*Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {}*/
+
+Agent* Virus::clone() const {
+    int node = this->getNode();
+    return new Virus(node);
+}
+
+Agent* ContactTracer::clone() const {
+    return new ContactTracer();
+}
+
+Agent *Agent::clone() const {
+    return nullptr;
 }

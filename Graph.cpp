@@ -8,21 +8,21 @@ using namespace std;
 Graph::Graph(std::vector<std::vector<int>> matrix) {
     cout << "I'm gonna start building your graph now..." << endl; // delme
     this->edges = std::move(matrix); // rename matrix to this.edges
-    int num_of_nodes = this->edges.size();
-    this->nodes_state = vector<InfectionState>(num_of_nodes, VirusFree);
-    /*for (int i = 0; i < num_of_nodes; ++i) {
-        this->nodes_state.push_back(VirusFree); // virus-free, infected, occupied // TODO: maybe without vector?
-    }*/
-    this->infected_counter = 0; // no vertices are currently infected
+    this->nodes_state = vector<InfectionState>(this->edges.size(), VirusFree);
+    this->_setInfectedCounter(0); // no vertices are currently infected
+}
+
+void Graph::occupyNode(int nodeInd) {
+    this->nodes_state[nodeInd] = Occupied;
 }
 
 void Graph::infectNode(int nodeInd) {
     this->nodes_state[nodeInd] = Infected; // set node as infected
-    this->infected_counter++; // Update infected_counter
+    this->_infectedCounterUp(); // Update infected_counter
 }
 
 bool Graph::isInfected(int nodeInd) {
-    return (this->nodes_state[nodeInd] == 1);
+    return (this->nodes_state[nodeInd] == Infected);
 }
 
 Graph::Graph() {
@@ -33,6 +33,41 @@ int Graph::size() const {
     return (this->edges.size());
 }
 
-vector<int> Graph::getegde(int k) const {
+vector<int> Graph::getEdge(int k) const {
     return edges[k];
+}
+
+void Graph::removeEdge(int u, int v) { // remove the edge {u,v} from this->edges
+    this->edges[u][v] = 0; // removes the edge from u's neighbors list
+    this->edges[v][u] = 0; // removes the edge from v's neighbors list
+}
+
+bool Graph::isVirusFree(int nodeInd) {
+    return (this->nodes_state[nodeInd] == VirusFree);
+}
+
+vector<int> Graph::getNeighbors(int node) {
+    vector<int> neighbors;
+    for (int i : this->edges[node]) {
+        if (i == 1) neighbors.push_back(i);
+    }
+    return neighbors;
+}
+
+int Graph::getInfectedCounter() const {
+    return this->_infected_counter;
+}
+
+void Graph::_setInfectedCounter(int val) {
+    this->_infected_counter = val;
+}
+
+void Graph::_infectedCounterDown() {
+    int count = this->getInfectedCounter() - 1;
+    this->_setInfectedCounter(count);
+}
+
+void Graph::_infectedCounterUp() {
+    int count = this->getInfectedCounter() + 1;
+    this->_setInfectedCounter(count);
 }
