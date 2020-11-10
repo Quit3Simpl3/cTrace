@@ -71,9 +71,13 @@ void Session::updateCycle() {
 void Session::simulate() {
     cout << "Starting simulation..." << endl;
     //while(!this->checkStopCondition()) {
+    Session* s = this;
     for (int i = 0; i < 10; ++i) {
-        for (auto agent : this->agents) { // iterate over all active agents
-            agent->act(*this);
+        // create tmp_agents vector -> run for over tmp_agents
+        vector<Agent*> tmp_agents(this->agents);
+        for (auto agent : tmp_agents) { // iterate over all active agents
+            agent->act(*s);
+            // if a new virus has been added during this cycle, do not 'act' it until the new cycle
         }
         this->updateCycle(); // cycle++
     }
@@ -108,14 +112,10 @@ TreeType Session::getTreeType() const {
     return this->treeType;
 }
 
-Graph Session::getGraph() {
-    return Graph(this->g); // TODO: why not 'return this->g;'?
+Graph& Session::getGraph() {
+    return this->g;
 }
 
 int Session::getCycle() {
     return this->cycle;
-}
-
-int Session::getcyclenum() const{
-    return cyclenum;
 }

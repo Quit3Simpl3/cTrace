@@ -42,6 +42,7 @@ private:
     const int nodeInd; // DO NOT CHANGE!
     bool is_active=true; // Whether Virus.act() should run
     int findNextVictim(Session& session);
+    void occupy(Session& session, int node);
 };
 
 #endif

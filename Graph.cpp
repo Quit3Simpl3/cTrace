@@ -7,7 +7,7 @@ using namespace std;
 
 Graph::Graph(std::vector<std::vector<int>> matrix) {
     cout << "I'm gonna start building your graph now..." << endl; // delme
-    this->edges = std::move(matrix); // rename matrix to this.edges
+    this->edges = matrix; // rename matrix to this.edges
     this->nodes_state = vector<InfectionState>(this->edges.size(), VirusFree);
     this->_setInfectedCounter(0); // no vertices are currently infected
 }
