@@ -21,6 +21,7 @@ class Session{
 public:
     Session();
     Session(const std::string& path); // DO NOT CHANGE!
+    // TODO: implement copy-constructor of Session (deep copy of agents and graph)
 
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
@@ -32,11 +33,16 @@ public:
     Graph* getGraph();
     int getCycle() const;
     void json_to_agents(json j);
+    int getActiveViruses() const;
+    void activeVirusesUp();
+    void activeVirusesDown();
 
 private:
     Graph g; // DO NOT CHANGE!
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
+    int _active_viruses;
+    void _setActiveViruses(int val);
     queue<int> infectedQ;
     bool checkStopCondition();
     void updateCycle();

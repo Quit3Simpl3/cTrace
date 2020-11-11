@@ -42,6 +42,7 @@ void Virus::occupy(Session& session, int node) {
     Graph* g = session.getGraph();
     g->occupyNode(node);
     session.addAgent(*(new Virus(node))); // spread (clone self) to neighbor node
+    session.activeVirusesUp();
 }
 
 int Virus::findNextVictim(Session& session) { // make a copy to the next victim, and then look for another one
@@ -65,7 +66,7 @@ void Virus::act(Session &session) {
     if (!session.getGraph()->isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
     // Continue to next victim:
     int next_victim = this->findNextVictim(session);
-    if (next_victim == -1) this->deactivate();
+    if (next_victim == -1) this->deactivate(session);
     else this->occupy(session, next_victim);
 }
 
@@ -73,8 +74,9 @@ Virus::~Virus() { // delete virus object
     // TODO
 }
 
-void Virus::deactivate() {
+void Virus::deactivate(Session& session) {
     this->is_active = false;
+    session.activeVirusesDown();
 }
 
 int Virus::getNode() const {

@@ -34,8 +34,7 @@ public:
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void infectNode(Session& session);
-    void infectNode(Session& session, int node);
-    void deactivate();
+    void deactivate(Session& session);
     int getNode() const;
 
 private:
