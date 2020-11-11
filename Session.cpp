@@ -22,15 +22,17 @@ void Session::json_to_agents(json j) {
 }
 
 void Session::createAgent(int start_node) {
-    Agent* agent;
+//    Agent* agent;
     if (start_node == -1) {
-        agent = new ContactTracer(); // create a new contactTracer agent
+//        agent = new ContactTracer(); // create a new contactTracer agent
+        this->addAgent(ContactTracer());
     }
     else {
-        agent = new Virus(start_node); // create a new Virus agent
+//        agent = new Virus(start_node); // create a new Virus agent
+        this->addAgent(Virus(start_node));
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
-    this->addAgent(*agent); // add the new agent to the agents vector
+//    this->addAgent(*agent); // add the new agent to the agents vector
     // TODO: make sure everything is deleted
 }
 
@@ -60,7 +62,7 @@ Session::Session(const std::string &path) {
     this->cycle = 0;
 }
 
-bool Session::checkStopCondition() {
+bool Session::checkStopCondition() { // check termination conditions
     return false;
 }
 
