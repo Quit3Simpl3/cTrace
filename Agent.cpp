@@ -39,8 +39,7 @@ void Virus::infectNode(Session& session) { // a Virus only infects its host
 
 void Virus::occupy(Session& session, int node) {
     // handle session and graph
-    Graph* g = session.getGraph();
-    g->occupyNode(node);
+    session.getGraph()->occupyNode(node);
     session.addAgent(*(new Virus(node))); // spread (clone self) to neighbor node
     session.activeVirusesUp();
 }

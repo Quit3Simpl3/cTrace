@@ -24,19 +24,15 @@ void Session::json_to_agents(json j) {
 }
 
 void Session::createAgent(const string& agent_type, int start_node) {
-//    Agent* agent;
     if (agent_type == "C" || agent_type == "c") {
-//        agent = new ContactTracer(); // create a new contactTracer agent
         this->addAgent(ContactTracer());
     }
     else {
-//        agent = new Virus(start_node); // create a new Virus agent
         this->activeVirusesUp(); // update active viruses counter
         this->addAgent(Virus(start_node));
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
-//    this->addAgent(*agent); // add the new agent to the agents vector
-    // TODO: make sure everything is deleted
+    // TODO: make sure temp ct and virus are deleted
 }
 
 TreeType json_to_treeType(json j) {
@@ -45,8 +41,6 @@ TreeType json_to_treeType(json j) {
     if (tree_type_short == "C") return Cycle;
     else return Root; // maybe if(..."R")?
 }
-
-Session::Session() {/*default constructor*/}
 
 Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
@@ -105,7 +99,7 @@ void Session::addAgent(const Agent& agent) {
 }
 
 void Session::setGraph(const Graph &graph) {
-    this->g = graph; // todo: check move-constructor
+    this->g = &graph; // using Copy-Constructor because &graph is const
 }
 
 void Session::enqueueInfected(int node) {
