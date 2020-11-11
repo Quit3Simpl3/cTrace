@@ -70,10 +70,6 @@ void Virus::act(Session &session) {
     else this->occupy(session, next_victim);
 }
 
-Virus::~Virus() { // delete virus object
-    // TODO
-}
-
 void Virus::deactivate(Session& session) {
     this->is_active = false;
     session.activeVirusesDown();
@@ -83,12 +79,12 @@ int Virus::getNode() const {
     return this->nodeInd;
 }
 
-/*Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {}*/
-
 Agent* Virus::clone() const {
     int node = this->getNode();
     return new Virus(node);
 }
+
+//Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()), is_active(virus.is_active) {}
 
 Agent* ContactTracer::clone() const {
     return new ContactTracer();
