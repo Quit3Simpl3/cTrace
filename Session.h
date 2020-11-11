@@ -46,7 +46,7 @@ private:
     queue<int> infectedQ;
     bool checkStopCondition();
     void updateCycle();
-    void createAgent(int contact_tracers);
+    void createAgent(const string&, int);
     int cycle;
 };
 

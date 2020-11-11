@@ -18,14 +18,14 @@ void Session::json_to_agents(json j) {
     // reset _active_viruses to 0:
     this->_setActiveViruses(0);
     vector<pair<string, int>> agents_matrix = j.at("agents");
-    for (pair<string, int> a : agents_matrix) {
-        this->createAgent(a.second); // create the necessary agent
+    for (const pair<string, int>& a : agents_matrix) {
+        this->createAgent(a.first, a.second); // create the necessary agent
     }
 }
 
-void Session::createAgent(int start_node) {
+void Session::createAgent(const string& agent_type, int start_node) {
 //    Agent* agent;
-    if (start_node == -1) {
+    if (agent_type == "C" || agent_type == "c") {
 //        agent = new ContactTracer(); // create a new contactTracer agent
         this->addAgent(ContactTracer());
     }
@@ -95,7 +95,7 @@ void Session::simulate() {
     while(!this->checkStopCondition() || i == 9);
     json answer;
     answer["graph"] = this->getGraph()->getEdges();
-    answer["infected"] = this->getGraph()->getInfections();
+    answer["infected"] = this->getGraph()->getInfectedNodes();
     ofstream myAnserIs("./output.json");
     myAnserIs << answer;
 }

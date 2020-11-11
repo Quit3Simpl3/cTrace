@@ -21,6 +21,7 @@ void Graph::occupyNode(int nodeInd) {
 void Graph::infectNode(int nodeInd) {
     this->infections[nodeInd] = 1;
     this->_infectedCounterUp(); // Update infected_counter
+    this->infected_nodes.push_back(nodeInd);
 }
 
 bool Graph::isInfected(int nodeInd) {
@@ -76,13 +77,8 @@ std::vector<std::vector<int>> Graph::getEdges() {
     return edges;
 }
 
-std::vector<int> Graph::getInfections() {
-    vector<int> myinfectons;
-    for (int i = 0; i<this->size(); i++){
-        if (infections[i] == 1)
-            myinfectons.push_back(i);
-    }
-    return myinfectons;
+std::vector<int> Graph::getInfectedNodes() {
+    return this->infected_nodes;
 }
 /*
 int Graph::getOccupiedCounter() const {
