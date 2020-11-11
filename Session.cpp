@@ -15,6 +15,8 @@ vector<vector<int>> json_to_adjacency_matrix(json j) {
 }
 
 void Session::json_to_agents(json j) {
+    // reset _active_viruses to 0:
+    this->_setActiveViruses(0);
     vector<pair<string, int>> agents_matrix = j.at("agents");
     for (pair<string, int> a : agents_matrix) {
         this->createAgent(a.second); // create the necessary agent
@@ -29,6 +31,7 @@ void Session::createAgent(int start_node) {
     }
     else {
 //        agent = new Virus(start_node); // create a new Virus agent
+        this->activeVirusesUp(); // update active viruses counter
         this->addAgent(Virus(start_node));
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
@@ -63,7 +66,12 @@ Session::Session(const std::string &path) {
 }
 
 bool Session::checkStopCondition() { // check termination conditions
-    return false;
+    Graph* graph = this->getGraph();
+    return (
+            (graph->getInfectedCounter() == graph->size())
+            ||
+            (this->getActiveViruses() == 0)
+            );
 }
 
 void Session::updateCycle() {
@@ -72,21 +80,22 @@ void Session::updateCycle() {
 
 void Session::simulate() {
     cout << "Starting simulation..." << endl;
-    //while(!this->checkStopCondition()) {
-    Session* s = this;
-    for (int i = 0; i < 100; ++i) {
-        // create tmp_agents vector -> run for over tmp_agents
+    int i = 0;
+    do {
+        // create tmp_agents vector -> run foreach-loop over tmp_agents
         vector<Agent*> tmp_agents(this->agents);
         for (auto agent : tmp_agents) { // iterate over all active agents
-            agent->act(*s);
-            // if a new virus has been added during this cycle, do not 'act' it until the new cycle
+            agent->act(*this); // if a new virus has been added during this cycle, do not 'act' it until the new cycle
         }
         this->updateCycle(); // cycle++
+        // DEBUG
+        i++;
+        // DEBUG
     }
-    //}  //
+    while(!this->checkStopCondition() || i == 9);
     json answer;
-    answer["graph"] = getGraph()->getedges();
-    answer["infected"] = getGraph()->getinfections();
+    answer["graph"] = this->getGraph()->getEdges();
+    answer["infected"] = this->getGraph()->getInfections();
     ofstream myAnserIs("./output.json");
     myAnserIs << answer;
 }
@@ -126,4 +135,20 @@ Graph* Session::getGraph() {
 
     int Session::getCycle() const  {
     return this->cycle;
+}
+
+void Session::activeVirusesUp() {
+    this->_setActiveViruses(this->_active_viruses+1);
+}
+
+void Session::activeVirusesDown() {
+    this->_setActiveViruses(this->_active_viruses-1);
+}
+
+int Session::getActiveViruses() const {
+    return this->_active_viruses;
+}
+
+void Session::_setActiveViruses(int val) {
+    this->_active_viruses = val;
 }

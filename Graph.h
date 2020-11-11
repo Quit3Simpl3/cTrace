@@ -21,8 +21,8 @@ public:
     vector<int> getEdge(int k) const;
 
     void removeEdge(int u, int v);
-    std::vector<std::vector<int>> getedges();
-    std::vector<int> getinfections();
+    std::vector<std::vector<int>> getEdges();
+    std::vector<int> getInfections();
     
 private:
     std::vector<std::vector<int>> edges; // DO NOT CHANGE!

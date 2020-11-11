@@ -33,11 +33,16 @@ public:
     Graph* getGraph();
     int getCycle() const;
     void json_to_agents(json j);
+    int getActiveViruses() const;
+    void activeVirusesUp();
+    void activeVirusesDown();
 
 private:
     Graph g; // DO NOT CHANGE!
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
+    int _active_viruses;
+    void _setActiveViruses(int val);
     queue<int> infectedQ;
     bool checkStopCondition();
     void updateCycle();
