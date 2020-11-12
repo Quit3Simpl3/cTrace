@@ -40,7 +40,7 @@ void Virus::infectNode(Session& session) { // a Virus only infects its host
 void Virus::occupy(Session& session, int node) {
     // handle session and graph
     session.getGraph()->occupyNode(node);
-    session.addAgent(*(new Virus(node))); // spread (clone self) to neighbor node
+    session.addAgent(Virus(node)); // spread (clone self) to neighbor node
     session.activeVirusesUp();
 }
 
@@ -70,7 +70,7 @@ void Virus::act(Session &session) {
 }
 
 Virus::~Virus() { // delete virus object
-    // TODO
+    delete this;
 }
 
 void Virus::deactivate(Session& session) {
@@ -86,11 +86,17 @@ int Virus::getNode() const {
 
 Agent* Virus::clone() const {
     int node = this->getNode();
-    return new Virus(node);
+    Virus* virus = new Virus(node);
+    delete this;
+    return virus;
 }
 
 Agent* ContactTracer::clone() const {
     return new ContactTracer();
+}
+
+ContactTracer::~ContactTracer() {
+    delete this;
 }
 
 Agent *Agent::clone() const {

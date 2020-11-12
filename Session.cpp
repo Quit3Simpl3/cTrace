@@ -146,3 +146,9 @@ int Session::getActiveViruses() const {
 void Session::_setActiveViruses(int val) {
     this->_active_viruses = val;
 }
+
+Session::~Session() {
+    for (int i = 0; i < this->agents.size(); ++i) {
+        delete this->agents[i];
+    }
+}

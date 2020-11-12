@@ -10,6 +10,7 @@ public:
     Agent(); // DO NOT CHANGE!
     virtual Agent* clone() const;
     virtual void act(Session& session)=0; // DO NOT CHANGE!
+//    virtual ~Agent();
 };
 
 class ContactTracer: public Agent{
@@ -17,6 +18,7 @@ public:
     ContactTracer(); // DO NOT CHANGE!
 //    ContactTracer(const ContactTracer &contactTracer);
     Agent *clone() const;
+    virtual ~ContactTracer();
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void removeAllEdges(Session& session, int node);
@@ -29,7 +31,7 @@ class Virus: public Agent{
 public:
     Virus(int nodeInd); // DO NOT CHANGE!
 //    Virus(const Virus &virus);
-    ~Virus();
+    virtual ~Virus();
     Agent *clone() const;
 
     virtual void act(Session& session); // DO NOT CHANGE!

@@ -22,6 +22,7 @@ public:
     Session(){}; // default constructor
     Session(const std::string& path); // DO NOT CHANGE!
     // TODO: implement copy-constructor of Session (deep copy of agents and graph) if needed
+    virtual ~Session();
 
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
