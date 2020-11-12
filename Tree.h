@@ -3,6 +3,7 @@
 #include "Session.h"
 #include <vector>
 #include <array>
+
 using namespace std;
 
 class Session;
@@ -18,10 +19,18 @@ public:
     int getmynode();
     vector<Tree*> getmychildren();
     void MaxtraceTree(vector<array<int,3>> &track_tree, int high);
+    Tree(const Tree &aTree); //Copy con..
+    virtual ~Tree();// destr..
+    Tree & operator=(const Tree &k); // copy ass..
+
+
+
 
 private:
     int node; // DO NOT CHANGE!
     std::vector<Tree*> children; // DO NOT CHANGE!
+    void clear();
+
 };
 
 class CycleTree: public Tree{

@@ -3,6 +3,7 @@
 #include <vector>
 #include "Session.h"
 #include <array>
+#include <typeinfo>
 
 
 using namespace std;
@@ -119,6 +120,36 @@ void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
         }
     }
 }
+
+Tree::~Tree() {
+
+    clear();
+}
+
+Tree::Tree(const Tree &aTree) : node(aTree.node)  {
+
+    this->children = aTree.children;
+}
+
+void Tree::clear() {
+   if (!children.empty()){
+       children.clear();
+    }
+}
+
+Tree &Tree::operator=(const Tree &k) {
+    if (k.children == this->children ) {
+        return *this;
+    }
+   // Tree *tmp = k.copy();
+            this->clear();
+    this->node = k.node;
+    this->children = k.children;
+    return *this;
+}
+
+
+
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 
