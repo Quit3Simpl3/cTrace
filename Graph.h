@@ -9,7 +9,7 @@ class Graph{
 public:
     Graph(){}; // Default constructor
     Graph(std::vector<std::vector<int>> matrix); // DO NOT CHANGE!
-    virtual ~Graph(){}; // Destructor
+//    virtual ~Graph(){}; // Destructor
     Graph(const Graph *other); // Copy-Constructor
 
     void infectNode(int nodeInd); // DO NOT CHANGE!

@@ -1,7 +1,10 @@
+#include <iostream>
 #include "Agent.h"
 #include "Tree.h"
 
 Agent::Agent() {}
+
+Agent::~Agent() { /*delete Agent object*/ }
 
 ContactTracer::ContactTracer() {}
 
@@ -19,6 +22,7 @@ void ContactTracer::act(Session& session) {
     Tree* bfs_tree = Tree::BFS(session, start_node);
     int patient = bfs_tree->traceTree();
     this->removeAllEdges(session, patient); // remove all the patient's edges
+    delete bfs_tree;
 }
 
 void ContactTracer::removeAllEdges(Session& session, int node) {
@@ -26,8 +30,6 @@ void ContactTracer::removeAllEdges(Session& session, int node) {
         session.getGraph()->removeEdge(node, i); // sets all of u's row in edges vector to 0
     }
 }
-
-//ContactTracer::ContactTracer(const ContactTracer &contactTracer) {}
 
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
 
@@ -69,10 +71,6 @@ void Virus::act(Session &session) {
     else this->occupy(session, next_victim);
 }
 
-Virus::~Virus() { // delete virus object
-    delete this;
-}
-
 void Virus::deactivate(Session& session) {
     this->is_active = false;
     session.activeVirusesDown();
@@ -82,23 +80,27 @@ int Virus::getNode() const {
     return this->nodeInd;
 }
 
-/*Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {}*/
-
-Agent* Virus::clone() const {
-    int node = this->getNode();
-    Virus* virus = new Virus(node);
-    delete this;
-    return virus;
+Virus* Virus::clone() const {
+    return new Virus(*this);
 }
 
-Agent* ContactTracer::clone() const {
-    return new ContactTracer();
+Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {/*Copy-Constructor*/}
+
+ContactTracer* ContactTracer::clone() const {
+    return new ContactTracer(*this);
 }
 
-ContactTracer::~ContactTracer() {
-    delete this;
-}
+ContactTracer::ContactTracer(const ContactTracer &contactTracer) {/*Copy-Constructor*/}
 
-Agent *Agent::clone() const {
-    return nullptr;
+Virus::~Virus() { /*delete virus object*/ }
+
+ContactTracer::~ContactTracer() { /*delete ContactTracer object*/ }
+
+char ContactTracer::getType() {
+    cout << "Here CT" << endl;
+    return 'C';
+}
+char Virus::getType() {
+    cout << "Here V" << endl;
+    return 'V';
 }

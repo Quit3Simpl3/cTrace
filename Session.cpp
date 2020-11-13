@@ -35,6 +35,10 @@ void Session::createAgent(const string& agent_type, int start_node) {
     // TODO: make sure temp ct and virus are deleted
 }
 
+void Session::addAgent(const Agent& agent) {
+    this->agents.push_back(agent.clone());
+}
+
 TreeType json_to_treeType(json j) {
     string tree_type_short = j.at("tree");
     if (tree_type_short == "M") return MaxRank;
@@ -81,6 +85,7 @@ void Session::simulate() {
         for (auto agent : tmp_agents) { // iterate over all active agents
             agent->act(*this); // if a new virus has been added during this cycle, do not 'act' it until the new cycle
         }
+        cout << "Cycle: " << this->getCycle() << endl;
         this->updateCycle(); // cycle++
         // DEBUG
         i++;
@@ -92,10 +97,6 @@ void Session::simulate() {
     answer["infected"] = this->getGraph()->getInfectedNodes();
     ofstream myAnserIs("./output.json");
     myAnserIs << answer;
-}
-
-void Session::addAgent(const Agent& agent) {
-    this->agents.push_back(agent.clone());
 }
 
 void Session::setGraph(const Graph &graph) {
@@ -151,4 +152,5 @@ Session::~Session() {
     for (int i = 0; i < this->agents.size(); ++i) {
         delete this->agents[i];
     }
+//    delete g;
 }

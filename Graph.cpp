@@ -11,6 +11,7 @@ Graph::Graph(std::vector<std::vector<int>> matrix) {
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);
     this->_setInfectedCounter(0); // no vertices are currently infected
+    cout << "Done building your graph." << endl;
 }
 
 void Graph::occupyNode(int nodeInd) {
@@ -75,6 +76,7 @@ std::vector<std::vector<int>> Graph::getEdges() {
 }
 
 std::vector<int> Graph::getInfectedNodes() {
+    cout << this->getInfectedCounter() << endl;
     return this->infected_nodes;
 }
 
