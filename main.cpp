@@ -9,11 +9,8 @@ int main(int argc, char** argv){
         return 0;
     }
     cout<<"Welcome home, son."<<endl;
-    /*{
-        Session sess(argv[1]);
-        sess.simulate();
-    }*/
     Session sess(argv[1]);
     sess.simulate();
+    cout << "Done." << endl;
     return 0;
 }

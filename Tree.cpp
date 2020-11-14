@@ -17,14 +17,10 @@ void Tree::addChild(const Tree &child)  {
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    Session temp = session; //need to fix the syntax.
-    if(temp.getTreeType() == MaxRank) {
-        return (new MaxRankTree(rootLabel));
-    } else if (temp.getTreeType() == Cycle) {
-        //     return (new CycleTree(rootLabel,session.getcyclenum()));
-        return (new CycleTree(rootLabel, session.getCycle()));
-    }else
-        return (new RootTree(rootLabel));
+    TreeType type = session.getTreeType();
+    if(type == MaxRank) return (new MaxRankTree(rootLabel));
+    if (type == Cycle) return (new CycleTree(rootLabel, session.getCycle()));
+    return (new RootTree(rootLabel));
 }
 
 Tree *Tree::BFS(Session& session, int rootLabel) {

@@ -149,9 +149,10 @@ void Session::_setActiveViruses(int val) {
 }
 
 Session::~Session() {
-    for (int i = 0; i < this->agents.size(); ++i) {
+    /*for (int i = 0; i < this->agents.size(); ++i) {
         delete this->agents[i];
-    }
+    }*/
+    if (!this->agents.empty()) this->agents.clear();
     clearQ(this->infectedQ);
 }
 
