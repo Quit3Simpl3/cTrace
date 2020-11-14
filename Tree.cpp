@@ -1,9 +1,10 @@
-#include <iostream>
 #include "Tree.h"
 #include <queue>
 #include <vector>
 #include "Session.h"
 #include <array>
+#include <typeinfo>
+
 
 using namespace std;
 
@@ -13,14 +14,17 @@ Tree::Tree(int rootLabel) : node(rootLabel) , children() {
 
 void Tree::addChild(const Tree &child)  {
     children.push_back((Tree*) (&child));
-//    this->children.push_back(child.clone());
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    TreeType t = session.getTreeType();
-    if (t == MaxRank) return (new MaxRankTree(rootLabel));
-    if (t == Cycle) return (new CycleTree(rootLabel, session.getCycle()));
-    return (new RootTree(rootLabel));
+    Session temp = session; //need to fix the syntax.
+    if(temp.getTreeType() == MaxRank) {
+        return (new MaxRankTree(rootLabel));
+    } else if (temp.getTreeType() == Cycle) {
+        //     return (new CycleTree(rootLabel,session.getcyclenum()));
+        return (new CycleTree(rootLabel, session.getCycle()));
+    }else
+        return (new RootTree(rootLabel));
 }
 
 Tree *Tree::BFS(Session& session, int rootLabel) {
@@ -41,7 +45,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g->getEdge(tmptree->getNode());
+        const vector<int>& is_edge = g->getEdge(tmptree->getmynode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;
@@ -50,12 +54,13 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
                 tmptree->addChild(*child_tree);
             }
         }
+
     }
     while (!child_pos.empty());
     return father_tree;
 }
 
-int Tree::getNode() const {
+int Tree::getmynode() {
     return node;
 }
 
@@ -64,71 +69,23 @@ vector<Tree *> Tree::getmychildren() {
 }
 
 
-CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {}
+CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {
+
+
+}
 
 int CycleTree::traceTree() {
     if(currCycle == 0 || getmychildren().empty()) {
-        return getNode();
+        return getmynode();
     } else {
         Tree *cycle_round= getmychildren()[0];
         for (int i = 1; !(cycle_round->getmychildren().empty())&& i < currCycle; ++i) {
             cycle_round = cycle_round->getmychildren()[0];
         };
-        return cycle_round->getNode();
+        return cycle_round->getmynode();
     }
     ; // TODO: trace the bfs tree
 }
-
-/*vector<Tree *> Tree::copyChildren() const {
-    vector<Tree*> children_copy;
-    for (int i = 0; i < this->children.size(); ++i) {
-        children_copy.push_back(std::copy(this->children[i]));
-    }
-}*/
-
-vector<Tree*> Tree::getKids() const {
-    return this->children;
-}
-
-//CycleTree::CycleTree(const CycleTree &tree) : Tree(tree.getNode()) {/*Copy-Constructor*/
-    /*this->currCycle
-    vector<Tree*> kids;
-    for (int i = 0; i < tree.getKids().size(); ++i) {
-        kids.push_back(tree.getKids()[i]);
-    }
-}*/
-
-RootTree::RootTree(const RootTree &tree) : Tree(tree.getNode()) { /*Copy-Constructor*/
-    /*vector<Tree*> kids;
-    for (int i = 0; i < tree.getKids().size(); ++i) {
-        const Tree* kid = tree.getKids()[i];
-        this->addChild(tree.getKids()[i]->clone());
-    }*/
-}
-
-/*void RootTree::setChildren(vector<Tree*> c) {
-    this->children = c;
-}*/
-
-/*CycleTree *CycleTree::clone() const {
-    return new CycleTree(*this);
-}
-
-MaxRankTree *MaxRankTree::clone() const {
-    return new MaxRankTree(*this);
-}
-
-RootTree *RootTree::clone() const {
-    RootTree* tree = new RootTree(*this);
-    if (this->getKids().size() > 0) {
-        for (int i = 0; i < this->getKids().size(); ++i) {
-            Tree* child = this->getKids()[i];
-            tree->addChild(*child);
-        }
-    }
-    return tree;
-//    return new RootTree(*this);
-}*/
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 
@@ -136,10 +93,10 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 
 int MaxRankTree::traceTree() {
     if (getmychildren().empty()) {
-        return getNode();
+        return getmynode();
     }else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
-                MaxtraceTree(track_tree,0); //i will change to static
+        MaxtraceTree(track_tree,0); //i will change to static
         int point = 0;
         for (int i = 1; i<track_tree.size();++i) {
             if (track_tree[i][0]>track_tree[point][0]){
@@ -151,33 +108,54 @@ int MaxRankTree::traceTree() {
             }
         }
         return track_tree[point][2];
-        }
+    }
 }
-
 void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
-    track_tree.push_back({(int)mysize, (int)high, (int) getNode()});
+    track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
     if (getmychildren().empty()) {
     } else {
-      for (int i = 0; i < mysize; ++i) {
-        children[i]->MaxtraceTree(track_tree, high + 1);
+        for (int i = 0; i < mysize; ++i) {
+            children[i]->MaxtraceTree(track_tree, high + 1);
         }
     }
 }
+
+Tree::~Tree() {
+
+    clear();
+}
+
+Tree::Tree(const Tree &aTree) : node(aTree.node)  {
+
+    this->children = aTree.children;
+}
+
+void Tree::clear() {
+    if (!children.empty()){
+        children.clear();
+    }
+}
+
+Tree &Tree::operator=(const Tree &k) {
+    if (k.children == this->children ) {
+        return *this;
+    }
+    // Tree *tmp = k.copy();
+    this->clear();
+    this->node = k.node;
+    this->children = k.children;
+    return *this;
+}
+
+
+
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 
 }
 
 int RootTree::traceTree() {
-    return getNode();
-}
+    return getmynode();
 
-/*Tree::~Tree() { // TODO
-    if (this->getmychildren().size() > 0) {
-        for (int i = 0; i < this->getmychildren().size(); ++i) {
-            delete this->children[i];
-        }
-        children.clear();
-    }
-}*/
+}
