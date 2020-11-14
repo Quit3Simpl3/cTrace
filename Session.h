@@ -49,6 +49,7 @@ private:
     void updateCycle(); // cycle++
     void createAgent(const string&, int); // create a new agent from json using ("V/C", node_number) pair
     int cycle; // cycle counter
+    static void clearQ(queue<int>& q);
 };
 
 #endif

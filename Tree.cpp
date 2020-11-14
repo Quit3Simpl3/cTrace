@@ -5,7 +5,6 @@
 #include "Session.h"
 #include <array>
 
-
 using namespace std;
 
 Tree::Tree(int rootLabel) : node(rootLabel) , children() {
@@ -18,9 +17,9 @@ void Tree::addChild(const Tree &child)  {
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-//    Session temp = session; //need to fix the syntax.
-    if (session.getTreeType() == MaxRank) return (new MaxRankTree(rootLabel));
-    if (session.getTreeType() == Cycle) return (new CycleTree(rootLabel, session.getCycle()));
+    TreeType t = session.getTreeType();
+    if (t == MaxRank) return (new MaxRankTree(rootLabel));
+    if (t == Cycle) return (new CycleTree(rootLabel, session.getCycle()));
     return (new RootTree(rootLabel));
 }
 
@@ -51,7 +50,6 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
                 tmptree->addChild(*child_tree);
             }
         }
-
     }
     while (!child_pos.empty());
     return father_tree;
@@ -112,7 +110,7 @@ RootTree::RootTree(const RootTree &tree) : Tree(tree.getNode()) { /*Copy-Constru
     this->children = c;
 }*/
 
-CycleTree *CycleTree::clone() const {
+/*CycleTree *CycleTree::clone() const {
     return new CycleTree(*this);
 }
 
@@ -130,7 +128,7 @@ RootTree *RootTree::clone() const {
     }
     return tree;
 //    return new RootTree(*this);
-}
+}*/
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
 
@@ -175,10 +173,11 @@ int RootTree::traceTree() {
     return getNode();
 }
 
-Tree::~Tree() { // TODO
+/*Tree::~Tree() { // TODO
     if (this->getmychildren().size() > 0) {
         for (int i = 0; i < this->getmychildren().size(); ++i) {
             delete this->children[i];
         }
+        children.clear();
     }
-}
+}*/

@@ -152,5 +152,10 @@ Session::~Session() {
     for (int i = 0; i < this->agents.size(); ++i) {
         delete this->agents[i];
     }
-//    delete g;
+    clearQ(this->infectedQ);
+}
+
+void Session::clearQ(queue<int>& q) {
+    queue<int> empty;
+    swap(q, empty);
 }
