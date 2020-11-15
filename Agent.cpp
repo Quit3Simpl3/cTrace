@@ -4,8 +4,6 @@
 
 Agent::Agent() {}
 
-Agent::~Agent() { /*delete Agent object*/ }
-
 ContactTracer::ContactTracer() {}
 
 int ContactTracer::dequeueInfected(Session& session) {
@@ -88,7 +86,6 @@ Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {/*Copy-Constructor*
 
 ContactTracer* ContactTracer::clone() const {
     return new ContactTracer(*this);
-}
 
 ContactTracer::ContactTracer(const ContactTracer &contactTracer) {/*Copy-Constructor*/}
 
@@ -97,10 +94,8 @@ Virus::~Virus() { /*delete virus object*/ }
 ContactTracer::~ContactTracer() { /*delete ContactTracer object*/ }
 
 char ContactTracer::getType() {
-    cout << "Here CT" << endl;
     return 'C';
 }
 char Virus::getType() {
-    cout << "Here V" << endl;
     return 'V';
 }
