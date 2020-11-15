@@ -8,16 +8,22 @@
 class Agent{
 public:
     Agent(); // DO NOT CHANGE!
-    virtual Agent* clone() const;
     virtual void act(Session& session)=0; // DO NOT CHANGE!
+  
+    virtual Agent* clone() const=0;
     virtual ~Agent(){};
+    virtual char getType()=0;
 };
 
 class ContactTracer: public Agent{
 public:
     ContactTracer(); // DO NOT CHANGE!
-    virtual ~ContactTracer(){}; // Destructor
-    Agent *clone() const;
+  
+    ContactTracer(const ContactTracer &contactTracer); // Copy-Constructor
+    ContactTracer* clone() const;
+    virtual ~ContactTracer();
+
+    char getType();
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void removeAllEdges(Session& session, int node);
@@ -28,9 +34,13 @@ public:
 class Virus: public Agent{
 public:
     Virus(int nodeInd); // DO NOT CHANGE!
-//    Virus(const Virus &virus); // Copy Constructor
-    virtual ~Virus(){}; // Destructor
-    Agent *clone() const;
+
+    Virus(const Virus &virus); // Copy-Constructor
+    virtual ~Virus();
+
+    char getType();
+
+    virtual Virus* clone() const; // for copying
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void infectNode(Session& session);

@@ -7,8 +7,10 @@ using namespace std;
 
 class Graph{
 public:
-    Graph(); // TODO: Make sure we REALLY need a default constructor
+    Graph(){}; // Default constructor
     Graph(std::vector<std::vector<int>> matrix); // DO NOT CHANGE!
+//    virtual ~Graph(){}; // Destructor
+    Graph(const Graph *other); // Copy-Constructor
 
     void infectNode(int nodeInd); // DO NOT CHANGE!
     bool isInfected(int nodeInd); // DO NOT CHANGE!
@@ -16,10 +18,8 @@ public:
     bool isVirusFree(int nodeInd);
     vector<int> getNeighbors(int node);
     int getInfectedCounter() const;
-
     int size() const;
     vector<int> getEdge(int k) const;
-
     void removeEdge(int u, int v);
     std::vector<std::vector<int>> getEdges();
     std::vector<int> getInfectedNodes();

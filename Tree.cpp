@@ -3,6 +3,7 @@
 #include <vector>
 #include "Session.h"
 #include <array>
+#include <typeinfo>
 
 
 using namespace std;
@@ -16,14 +17,10 @@ void Tree::addChild(const Tree &child)  {
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
-    Session temp = session; //need to fix the syntax.
-    if(temp.getTreeType() == MaxRank) {
-            return (new MaxRankTree(rootLabel));
-   } else if (temp.getTreeType() == Cycle) {
-       //     return (new CycleTree(rootLabel,session.getcyclenum()));
-          return (new CycleTree(rootLabel, session.getCycle()));
-    }else
-            return (new RootTree(rootLabel));
+    TreeType type = session.getTreeType();
+    if(type == MaxRank) return (new MaxRankTree(rootLabel));
+    if (type == Cycle) return (new CycleTree(rootLabel, session.getCycle()));
+    return (new RootTree(rootLabel));
 }
 
 Tree *Tree::BFS(Session& session, int rootLabel) {
@@ -95,7 +92,7 @@ int MaxRankTree::traceTree() {
         return getmynode();
     }else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
-                MaxtraceTree(track_tree,0); //i will change to static
+        MaxtraceTree(track_tree,0); //i will change to static
         int point = 0;
         for (int i = 1; i<track_tree.size();++i) {
             if (track_tree[i][0]>track_tree[point][0]){
@@ -107,18 +104,48 @@ int MaxRankTree::traceTree() {
             }
         }
         return track_tree[point][2];
-        }
+    }
 }
 void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
     track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
     if (getmychildren().empty()) {
     } else {
-      for (int i = 0; i < mysize; ++i) {
-        children[i]->MaxtraceTree(track_tree, high + 1);
+        for (int i = 0; i < mysize; ++i) {
+            children[i]->MaxtraceTree(track_tree, high + 1);
         }
     }
 }
+
+Tree::~Tree() {
+
+    clear();
+}
+
+Tree::Tree(const Tree &aTree) : node(aTree.node)  {
+
+    this->children = aTree.children;
+}
+
+void Tree::clear() {
+    if (!children.empty()){
+        children.clear();
+    }
+}
+
+Tree &Tree::operator=(const Tree &k) {
+    if (k.children == this->children ) {
+        return *this;
+    }
+    // Tree *tmp = k.copy();
+    this->clear();
+    this->node = k.node;
+    this->children = k.children;
+    return *this;
+}
+
+
+
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
 

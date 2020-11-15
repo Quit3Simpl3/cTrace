@@ -19,9 +19,10 @@ enum TreeType{ // DO NOT CHANGE!
 
 class Session{
 public:
-    Session();
+    Session(){}; // default constructor
     Session(const std::string& path); // DO NOT CHANGE!
-    // TODO: implement copy-constructor of Session (deep copy of agents and graph)
+    // TODO: implement copy-constructor of Session (deep copy of agents and graph) if needed
+    virtual ~Session();
 
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
@@ -30,10 +31,10 @@ public:
     void enqueueInfected(int); // DO NOT CHANGE!
     int dequeueInfected(); // DO NOT CHANGE!
     TreeType getTreeType() const; // DO NOT CHANGE!
-    Graph* getGraph();
-    int getCycle() const;
-    void json_to_agents(json j);
-    int getActiveViruses() const;
+    Graph* getGraph(); // returns pointer to Session.g
+    int getCycle() const; // returns current cycle of simulation
+    void json_to_agents(json j); // parse json to agents and create them
+    int getActiveViruses() const; // return count of active viruses
     void activeVirusesUp();
     void activeVirusesDown();
 
@@ -41,13 +42,14 @@ private:
     Graph g; // DO NOT CHANGE!
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
-    int _active_viruses;
-    void _setActiveViruses(int val);
+    int _active_viruses; // active viruses counter
+    void _setActiveViruses(int val); // set value for _active_viruses
     queue<int> infectedQ;
-    bool checkStopCondition();
-    void updateCycle();
-    void createAgent(const string&, int);
-    int cycle;
+    bool checkStopCondition(); // checks whether termination conditions are fulfilled
+    void updateCycle(); // cycle++
+    void createAgent(const string&, int); // create a new agent from json using ("V/C", node_number) pair
+    int cycle; // cycle counter
+    static void clearQ(queue<int>& q);
 };
 
 #endif

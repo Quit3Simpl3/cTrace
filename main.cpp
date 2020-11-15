@@ -8,8 +8,9 @@ int main(int argc, char** argv){
         std::cout << "usage cTrace <config_path>" << std::endl;
         return 0;
     }
+    cout<<"Welcome home, son."<<endl;
     Session sess(argv[1]);
     sess.simulate();
-    cout<<"hi"<<endl;
+    cout << "Done." << endl;
     return 0;
 }
