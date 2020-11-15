@@ -15,13 +15,14 @@ public:
 
     static Tree* createTree(const Session& session, int rootLabel); // DO NOT CHANGE!
     virtual int traceTree()=0; // DO NOT CHANGE!
+
     static Tree* BFS(Session& session, int rootLabel);
-    int getNode();
+    int getNode(); // Return this->node
     vector<Tree*> getChildren();
-    void MaxtraceTree(vector<array<int,3>> &track_tree, int high);
-    Tree(const Tree &aTree); //Copy con..
-    virtual ~Tree();// destr..
-    Tree & operator=(const Tree &k); // copy ass..
+    void maxRankTraceTree(vector<array<int,3>> &track_tree, int high);
+    Tree(const Tree &aTree); // Copy-Constructor
+    virtual ~Tree(); // Destructor
+    Tree & operator=(const Tree &k); // Copy-Assignment Operator
 
 
 private:

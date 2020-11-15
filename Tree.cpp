@@ -5,12 +5,9 @@
 #include <array>
 #include <typeinfo>
 
-
 using namespace std;
 
-Tree::Tree(int rootLabel) : node(rootLabel) , children() {
-
-}
+Tree::Tree(int rootLabel) : node(rootLabel) , children() {}
 
 void Tree::addChild(const Tree &child)  {
     children.push_back((Tree*) (&child));
@@ -30,7 +27,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
 //    Graph& g = session.getGraph();
     Graph* g = session.getGraph(); // TODO: test with line 30 working
 
-    for (int i=0;  i < g->size();++i ) { //initialization the vector
+    for (int i=0;  i < g->size();++i ) { // initialize the vector
         child_is_in.push_back(true);
     }
     Tree *father_tree = Tree::createTree(session, rootLabel);
@@ -86,7 +83,7 @@ int MaxRankTree::traceTree() {
         return getNode();
     }else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
-        MaxtraceTree(track_tree,0); //i will change to static
+        maxRankTraceTree(track_tree, 0); //i will change to static
         int point = 0;
         for (int i = 1; i<track_tree.size();++i) {
             if (track_tree[i][0]>track_tree[point][0]){
@@ -101,13 +98,13 @@ int MaxRankTree::traceTree() {
     }
 }
 
-void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
+void Tree::maxRankTraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
     track_tree.push_back({(int)mysize, (int)high, (int) getNode()});
     if (getChildren().empty()) {
     } else {
         for (int i = 0; i < mysize; ++i) {
-            children[i]->MaxtraceTree(track_tree, high + 1);
+            children[i]->maxRankTraceTree(track_tree, high + 1);
         }
     }
 }

@@ -15,12 +15,13 @@ void ContactTracer::act(Session& session) {
     // 2) create BFS by TreeType from node
     // 3) use treeTrace() to get the necessary node
     // 4) remove all the node's edges
+
     int start_node = this->dequeueInfected(session); // get new infected node from queue
     if (start_node == -1) return; // dequeueInfected returns -1 if empty
-    Tree* bfs_tree = Tree::BFS(session, start_node);
+    Tree* bfs_tree = Tree::BFS(session, start_node); // Maybe create static TraceTree() in Tree.cpp and not delete bfs_tree here?
     int patient = bfs_tree->traceTree();
     this->removeAllEdges(session, patient); // remove all the patient's edges
-    delete bfs_tree;
+    delete bfs_tree; // We must delete bfs_tree
 }
 
 void ContactTracer::removeAllEdges(Session& session, int node) {
