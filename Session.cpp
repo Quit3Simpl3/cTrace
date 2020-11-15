@@ -10,6 +10,7 @@ using namespace std;
 using namespace nlohmann;
 
 vector<vector<int>> json_to_adjacency_matrix(json j) {
+    cout << "what the hell" << endl;
     vector<vector<int>> matrix = j.at("graph");
     return matrix;
 }
@@ -50,9 +51,19 @@ Session::Session() {/*default constructor*/}
 
 Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
-    fstream stream(path);
+    ifstream stream(path,ifstream::binary);
+
+    //stream >> s;
+    cout << "lets print s" << endl;
+  //  cout << stream.rdbuf() << endl;
+    cout << path << endl;
+
     json j;
-    stream >> j;
+  //  stream >> j;
+    j = json::parse(stream,nullptr,false);
+    cout << "printing json" <<endl;
+    cout << j << endl;
+    cout << " i finsh" << endl;
     setGraph(Graph(json_to_adjacency_matrix(j)));
 
     // Add agents to Session by their order in json config file:
