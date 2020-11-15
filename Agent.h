@@ -12,7 +12,9 @@ public:
   
     virtual Agent* clone() const=0;
     virtual ~Agent(){};
-    virtual char getType()=0;
+    virtual char getType() const=0;
+
+    virtual int getNode() const=0;
 };
 
 class ContactTracer: public Agent{
@@ -23,7 +25,9 @@ public:
     ContactTracer* clone() const;
     virtual ~ContactTracer();
 
-    char getType();
+    int getNode() const {return -1;};
+
+    char getType() const;
 
     virtual void act(Session& session); // DO NOT CHANGE!
     void removeAllEdges(Session& session, int node);
@@ -38,7 +42,7 @@ public:
     Virus(const Virus &virus); // Copy-Constructor
     virtual ~Virus();
 
-    char getType();
+    char getType() const;
 
     virtual Virus* clone() const; // for copying
 

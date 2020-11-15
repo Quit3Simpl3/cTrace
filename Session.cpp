@@ -30,14 +30,23 @@ void Session::createAgent(const string& agent_type, int start_node) {
     }
     else {
         this->activeVirusesUp(); // update active viruses counter
+//        Virus* virus = new Virus(start_node);
         this->addAgent(Virus(start_node));
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
     // TODO: make sure temp ct and virus are deleted
 }
 
-void Session::addAgent(const Agent& agent) {
-    this->agents.push_back(agent.clone());
+void Session::addAgent(const Agent& agent) { // DO NOT CHANGE SIGNATURE
+//    this->agents.push_back(agent.clone());
+    if (agent.getType() == 'V') {
+        Virus* virus = new Virus(agent.getNode());
+        this->agents.push_back(virus);
+    }
+    else {
+        ContactTracer* contact_tracer = new ContactTracer();
+        this->agents.push_back(contact_tracer);
+    }
 }
 
 TreeType json_to_treeType(json j) {
@@ -51,17 +60,9 @@ Session::Session(const std::string &path) {
     // read json from file and parse to vertices adjacency matrix
     ifstream stream(path,ifstream::binary);
 
-    //stream >> s;
-    cout << "lets print s" << endl;
-  //  cout << stream.rdbuf() << endl;
-    cout << path << endl;
-
     json j;
   //  stream >> j;
     j = json::parse(stream,nullptr,false);
-    cout << "printing json" <<endl;
-    cout << j << endl;
-    cout << " i finsh" << endl;
     setGraph(Graph(json_to_adjacency_matrix(j)));
 
     // Add agents to Session by their order in json config file:
@@ -108,6 +109,7 @@ void Session::simulate() {
     answer["infected"] = this->getGraph()->getInfectedNodes();
     ofstream myAnserIs("./output.json");
     myAnserIs << answer;
+    cout << "created output file" << endl;
 }
 
 void Session::setGraph(const Graph &graph) {
@@ -160,10 +162,10 @@ void Session::_setActiveViruses(int val) {
 }
 
 Session::~Session() {
-    /*for (int i = 0; i < this->agents.size(); ++i) {
+    for (int i = 0; i < this->agents.size(); ++i) {
         delete this->agents[i];
-    }*/
-    if (!this->agents.empty()) this->agents.clear();
+    }
+//    if (!this->agents.empty()) this->agents.clear();
     clearQ(this->infectedQ);
 }
 

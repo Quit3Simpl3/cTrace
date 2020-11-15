@@ -94,9 +94,9 @@ Virus::~Virus() { /*delete virus object*/ }
 
 ContactTracer::~ContactTracer() { /*delete ContactTracer object*/ }
 
-char ContactTracer::getType() {
+char ContactTracer::getType() const {
     return 'C';
 }
-char Virus::getType() {
+char Virus::getType() const {
     return 'V';
 }

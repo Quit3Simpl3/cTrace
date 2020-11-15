@@ -113,7 +113,7 @@ void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
 }
 
 Tree::~Tree() {
-    clear();
+    this->clear();
 }
 
 Tree::Tree(const Tree &aTree) : node(aTree.node)  {
@@ -122,9 +122,12 @@ Tree::Tree(const Tree &aTree) : node(aTree.node)  {
 }
 
 void Tree::clear() {
-   if (!children.empty()){
-     children.clear();
-   }
+   /*if (!this->children.empty()){
+     this->children.clear();
+   }*/
+    for (int i = 0; i < children.size(); ++i) {
+        delete children[i];
+    }
 }
 
 Tree &Tree::operator=(const Tree &k) {
