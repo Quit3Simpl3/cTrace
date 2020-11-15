@@ -11,11 +11,11 @@ Graph::Graph(std::vector<std::vector<int>> matrix) {
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);
     this->_setInfectedCounter(0); // no vertices are currently infected
+    cout << "Done building your graph." << endl;
 }
 
 void Graph::occupyNode(int nodeInd) {
     this->virus_free[nodeInd] = 0;
-//    this->_occupiedCounterUp();
 }
 
 void Graph::infectNode(int nodeInd) {
@@ -31,8 +31,6 @@ bool Graph::isInfected(int nodeInd) {
 bool Graph::isVirusFree(int nodeInd) {
     return (this->virus_free[nodeInd]==1);
 }
-
-Graph::Graph() {/* default constructor */}
 
 int Graph::size() const {
     return (this->edges.size());
@@ -74,22 +72,17 @@ void Graph::_infectedCounterUp() {
 }
 
 std::vector<std::vector<int>> Graph::getEdges() {
-    return edges;
+    return this->edges;
 }
 
 std::vector<int> Graph::getInfectedNodes() {
+    cout << this->getInfectedCounter() << endl;
     return this->infected_nodes;
 }
-/*
-int Graph::getOccupiedCounter() const {
-    return this->_occupied_counter;
-}
 
-void Graph::_occupiedCounterUp() {
-    this->_occupied_counter++;
-}
-
-void Graph::_occupiedCounterDown() {
-    this->_occupied_counter--;
-}
-*/
+Graph::Graph(const Graph *other) :
+        edges(other->edges),
+        infections(other->infections),
+        virus_free(other->virus_free),
+        infected_nodes(other->infected_nodes),
+        _infected_counter(other->_infected_counter) {}

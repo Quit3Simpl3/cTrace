@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Agent.h"
 #include "Tree.h"
 
@@ -19,6 +20,7 @@ void ContactTracer::act(Session& session) {
     Tree* bfs_tree = Tree::BFS(session, start_node);
     int patient = bfs_tree->traceTree();
     this->removeAllEdges(session, patient); // remove all the patient's edges
+    delete bfs_tree;
 }
 
 void ContactTracer::removeAllEdges(Session& session, int node) {
@@ -26,8 +28,6 @@ void ContactTracer::removeAllEdges(Session& session, int node) {
         session.getGraph()->removeEdge(node, i); // sets all of u's row in edges vector to 0
     }
 }
-
-//ContactTracer::ContactTracer(const ContactTracer &contactTracer) {}
 
 Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
 
@@ -39,9 +39,8 @@ void Virus::infectNode(Session& session) { // a Virus only infects its host
 
 void Virus::occupy(Session& session, int node) {
     // handle session and graph
-    Graph* g = session.getGraph();
-    g->occupyNode(node);
-    session.addAgent(*(new Virus(node))); // spread (clone self) to neighbor node
+    session.getGraph()->occupyNode(node);
+    session.addAgent(Virus(node)); // spread (clone self) to neighbor node
     session.activeVirusesUp();
 }
 
@@ -70,10 +69,6 @@ void Virus::act(Session &session) {
     else this->occupy(session, next_victim);
 }
 
-Virus::~Virus() { // delete virus object
-    // TODO
-}
-
 void Virus::deactivate(Session& session) {
     this->is_active = false;
     session.activeVirusesDown();
@@ -83,17 +78,24 @@ int Virus::getNode() const {
     return this->nodeInd;
 }
 
-/*Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {}*/
-
-Agent* Virus::clone() const {
-    int node = this->getNode();
-    return new Virus(node);
+Virus* Virus::clone() const {
+    return new Virus(*this);
 }
 
-Agent* ContactTracer::clone() const {
-    return new ContactTracer();
-}
+Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {/*Copy-Constructor*/}
 
-Agent *Agent::clone() const {
-    return nullptr;
+ContactTracer* ContactTracer::clone() const {
+    return new ContactTracer(*this);
+
+ContactTracer::ContactTracer(const ContactTracer &contactTracer) {/*Copy-Constructor*/}
+
+Virus::~Virus() { /*delete virus object*/ }
+
+ContactTracer::~ContactTracer() { /*delete ContactTracer object*/ }
+
+char ContactTracer::getType() {
+    return 'C';
+}
+char Virus::getType() {
+    return 'V';
 }

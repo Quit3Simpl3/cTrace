@@ -3,10 +3,10 @@ all: cTrace
 
 # Tool invocations
 # Executable "cTrace" depends on the files: bin/main.o, bin/Agent.o, bin/Graph.o, bin/Session.o, bin/Tree.o
-cTrace: bin/main.o bin/Agent.o bin/Graph.o bin/Session.o bin/Tree.o 
+cTrace: bin/main.o bin/Agent.o bin/Graph.o bin/Session.o bin/Tree.o
 	@echo 'Building target: cTrace'
 	@echo 'Invoking: C++ Linker'
-	g++ -o bin/cTrace bin/main.o bin/Agent.o bin/Graph.o bin/Session.o bin/Tree.o bin/Tester.o
+	g++ -o bin/cTrace bin/main.o bin/Agent.o bin/Graph.o bin/Session.o bin/Tree.o
 	@echo 'Finished building target: cTrace'
 	@echo ' '
 
