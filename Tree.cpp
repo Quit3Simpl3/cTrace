@@ -41,7 +41,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g->getEdge(tmptree->getmynode());
+        const vector<int>& is_edge = g->getEdge(tmptree->getNode());
         for (int i = 0; i < is_edge.size(); ++i) {
             if (is_edge[i] == 1 & child_is_in[i] == true) {
                 child_is_in[i] = false;
@@ -55,11 +55,11 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     return father_tree;
 }
 
-int Tree::getmynode() {
+int Tree::getNode() {
     return node;
 }
 
-vector<Tree *> Tree::getmychildren() {
+vector<Tree *> Tree::getChildren() {
     return children;
 }
 
@@ -67,14 +67,14 @@ vector<Tree *> Tree::getmychildren() {
 CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {}
 
 int CycleTree::traceTree() {
-    if (currCycle == 0 || getmychildren().empty()) {
-        return getmynode();
+    if (currCycle == 0 || getChildren().empty()) {
+        return getNode();
     } else {
-        Tree *cycle_round = getmychildren()[0];
-        for (int i = 1; !(cycle_round->getmychildren().empty()) && i < currCycle; ++i) {
-            cycle_round = cycle_round->getmychildren()[0];
+        Tree *cycle_round = getChildren()[0];
+        for (int i = 1; !(cycle_round->getChildren().empty()) && i < currCycle; ++i) {
+            cycle_round = cycle_round->getChildren()[0];
         }
-        return cycle_round->getmynode();
+        return cycle_round->getNode();
     }
   // TODO: trace the bfs tree
 }
@@ -82,8 +82,8 @@ int CycleTree::traceTree() {
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {}
 
 int MaxRankTree::traceTree() {
-    if (getmychildren().empty()) {
-        return getmynode();
+    if (getChildren().empty()) {
+        return getNode();
     }else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
         MaxtraceTree(track_tree,0); //i will change to static
@@ -103,8 +103,8 @@ int MaxRankTree::traceTree() {
 
 void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
-    track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
-    if (getmychildren().empty()) {
+    track_tree.push_back({(int)mysize, (int)high, (int) getNode()});
+    if (getChildren().empty()) {
     } else {
         for (int i = 0; i < mysize; ++i) {
             children[i]->MaxtraceTree(track_tree, high + 1);
@@ -117,31 +117,27 @@ Tree::~Tree() {
 }
 
 Tree::Tree(const Tree &aTree) : node(aTree.node)  {
-
     this->children = aTree.children;
 }
 
 void Tree::clear() {
-   /*if (!this->children.empty()){
-     this->children.clear();
-   }*/
-    for (int i = 0; i < children.size(); ++i) {
+    for (int i = 0; i < children.size(); ++i) { // delete this Tree's children
         delete children[i];
     }
 }
 
-Tree &Tree::operator=(const Tree &k) {
-    if (k.children == this->children ) {
+Tree &Tree::operator=(const Tree &other) {
+    if (other.children == this->children) {
         return *this;
     }
     this->clear();
-    this->node = k.node;
-    this->children = k.children;
+    this->node = other.node;
+    this->children = other.children;
     return *this;
 }
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {}
 
 int RootTree::traceTree() {
-    return getmynode();
+    return getNode();
 }

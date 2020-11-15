@@ -61,8 +61,8 @@ Session::Session(const std::string &path) {
     ifstream stream(path,ifstream::binary);
 
     json j;
-  //  stream >> j;
-    j = json::parse(stream,nullptr,false);
+    stream >> j; // parse json from file
+//    j = json::parse(stream,nullptr,false); // select which one to use
     setGraph(Graph(json_to_adjacency_matrix(j)));
 
     // Add agents to Session by their order in json config file:
