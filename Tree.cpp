@@ -28,7 +28,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     vector<bool> child_is_in; // to know if the node is in the tree;
 
 //    Graph& g = session.getGraph();
-    Graph* g = session.getGraph();
+    Graph* g = session.getGraph(); // TODO: test with line 30 working
 
     for (int i=0;  i < g->size();++i ) { //initialization the vector
         child_is_in.push_back(true);
@@ -51,8 +51,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
             }
         }
 
-    }
-    while (!child_pos.empty());
+    } while (!child_pos.empty());
     return father_tree;
 }
 
@@ -65,27 +64,22 @@ vector<Tree *> Tree::getmychildren() {
 }
 
 
-CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {
-
-
-}
+CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {}
 
 int CycleTree::traceTree() {
-    if(currCycle == 0 || getmychildren().empty()) {
+    if (currCycle == 0 || getmychildren().empty()) {
         return getmynode();
     } else {
-        Tree *cycle_round= getmychildren()[0];
-        for (int i = 1; !(cycle_round->getmychildren().empty())&& i < currCycle; ++i) {
+        Tree *cycle_round = getmychildren()[0];
+        for (int i = 1; !(cycle_round->getmychildren().empty()) && i < currCycle; ++i) {
             cycle_round = cycle_round->getmychildren()[0];
-        };
+        }
         return cycle_round->getmynode();
     }
-    ; // TODO: trace the bfs tree
+  // TODO: trace the bfs tree
 }
 
-MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {
-
-}
+MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {}
 
 int MaxRankTree::traceTree() {
     if (getmychildren().empty()) {
@@ -106,6 +100,7 @@ int MaxRankTree::traceTree() {
         return track_tree[point][2];
     }
 }
+
 void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
     int mysize = children.size();
     track_tree.push_back({(int)mysize, (int)high, (int)getmynode()});
@@ -118,7 +113,6 @@ void Tree::MaxtraceTree (vector<array<int,3>> &track_tree, int high) {
 }
 
 Tree::~Tree() {
-
     clear();
 }
 
@@ -128,30 +122,23 @@ Tree::Tree(const Tree &aTree) : node(aTree.node)  {
 }
 
 void Tree::clear() {
-    if (!children.empty()){
-        children.clear();
-    }
+   if (!children.empty()){
+     children.clear();
+   }
 }
 
 Tree &Tree::operator=(const Tree &k) {
     if (k.children == this->children ) {
         return *this;
     }
-    // Tree *tmp = k.copy();
     this->clear();
     this->node = k.node;
     this->children = k.children;
     return *this;
 }
 
-
-
-
-RootTree::RootTree(int rootLabel) : Tree(rootLabel) {
-
-}
+RootTree::RootTree(int rootLabel) : Tree(rootLabel) {}
 
 int RootTree::traceTree() {
     return getmynode();
-
 }
