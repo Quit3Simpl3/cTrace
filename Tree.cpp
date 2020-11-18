@@ -21,27 +21,22 @@ Tree *Tree::createTree(const Session &session, int rootLabel) {
 }
 
 Tree *Tree::BFS(Session& session, int rootLabel) {
-    queue <Tree*> child_pos;  //for running the BFS
-    vector<bool> child_is_in; // to know if the node is in the tree;
+    Graph* g = session.getGraph();
+    queue <Tree*> child_pos;  // for running the BFS
+    vector<bool> is_child_in_children(g->size(), true); // to know if the node is in the tree. initialize all vector items to 'true'
 
-//    Graph& g = session.getGraph();
-    Graph* g = session.getGraph(); // TODO: test with line 30 working
-
-    for (int i=0;  i < g->size();++i ) { // initialize the vector
-        child_is_in.push_back(true);
-    }
     Tree *father_tree = Tree::createTree(session, rootLabel);
     Tree *tmptree;
     child_pos.push(father_tree);
-
-    child_is_in[rootLabel] = false;
+    is_child_in_children[rootLabel] = false;
     do {
         tmptree = child_pos.front();
         child_pos.pop();
-        const vector<int>& is_edge = g->getEdge(tmptree->getNode());
-        for (int i = 0; i < is_edge.size(); ++i) {
-            if (is_edge[i] == 1 & child_is_in[i]) {
-                child_is_in[i] = false;
+        const vector<int>& node_edges = g->getEdge(tmptree->getNode());
+        int node_edges_size = node_edges.size();
+        for (int i = 0; i < node_edges_size; ++i) {
+            if (node_edges[i] == 1 && is_child_in_children[i]) {
+                is_child_in_children[i] = false;
                 Tree *child_tree = Tree::createTree(session,i);
                 child_pos.push(child_tree);
                 tmptree->addChild(*child_tree);
@@ -56,24 +51,24 @@ int Tree::getNode() {
     return node;
 }
 
-vector<Tree *> Tree::getChildren() {
+vector<Tree*> Tree::getChildren() {
     return children;
 }
 
 
-CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {}
+CycleTree::CycleTree(int rootLabel, int currCycle) : Tree(rootLabel) , currCycle(currCycle) {/*default constructor*/}
 
 int CycleTree::traceTree() {
     if (currCycle == 0 || getChildren().empty()) {
         return getNode();
-    } else {
+    }
+    else {
         Tree *cycle_round = getChildren()[0];
         for (int i = 1; !(cycle_round->getChildren().empty()) && i < currCycle; ++i) {
             cycle_round = cycle_round->getChildren()[0];
         }
         return cycle_round->getNode();
     }
-  // TODO: trace the bfs tree
 }
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {}
@@ -81,14 +76,17 @@ MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {}
 int MaxRankTree::traceTree() {
     if (getChildren().empty()) {
         return getNode();
-    }else {
+    }
+    else {
         vector<array<int,3>> track_tree ;// 0 = children size, 1 = high of the node, 2 = node number
-        maxRankTraceTree(track_tree, 0); //i will change to static
+        maxRankTraceTree(track_tree, 0);
         int point = 0;
-        for (int i = 1; i<track_tree.size();++i) {
+        int track_tree_size = track_tree.size();
+        for (int i = 1; i < track_tree_size;++i) {
             if (track_tree[i][0]>track_tree[point][0]){
                 point = i;
-            }else if (track_tree[i][0]==track_tree[point][0]){
+            }
+            else if (track_tree[i][0]==track_tree[point][0]){
                 if(track_tree[i][1]<track_tree[point][1]) {
                     point = i;
                 }
@@ -99,11 +97,12 @@ int MaxRankTree::traceTree() {
 }
 
 void Tree::maxRankTraceTree (vector<array<int,3>> &track_tree, int high) {
-    int mysize = children.size();
-    track_tree.push_back({(int)mysize, (int)high, (int) getNode()});
+    int tree_size = children.size();
+    track_tree.push_back({(int)tree_size, (int)high, (int) getNode()});
     if (getChildren().empty()) {
-    } else {
-        for (int i = 0; i < mysize; ++i) {
+    }
+    else {
+        for (int i = 0; i < tree_size; ++i) {
             children[i]->maxRankTraceTree(track_tree, high + 1);
         }
     }
@@ -113,14 +112,14 @@ Tree::~Tree() {
     this->clear();
 }
 
-Tree::Tree(const Tree &aTree) : node(aTree.node)  {
-    this->children = aTree.children;
-}
+Tree::Tree(const Tree &aTree) : node(aTree.node), children(aTree.children) {/*copy-constructor*/}
 
 void Tree::clear() {
-    for (int i = 0; i < children.size(); ++i) { // delete this Tree's children
+    int children_size = this->children.size();
+    for (int i = 0; i < children_size; ++i) { // delete this Tree's children
         delete children[i];
     }
+    return; // for some reason CLion requested this
 }
 
 Tree &Tree::operator=(const Tree &other) {

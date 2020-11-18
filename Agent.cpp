@@ -30,7 +30,7 @@ void ContactTracer::removeAllEdges(Session& session, int node) {
     }
 }
 
-Virus::Virus(int nodeInd) : nodeInd(nodeInd) {}
+Virus::Virus(int nodeInd) : nodeInd(nodeInd) {} // Constructor
 
 void Virus::infectNode(Session& session) { // a Virus only infects its host
     Graph* g = session.getGraph();
@@ -45,10 +45,11 @@ void Virus::occupy(Session& session, int node) {
     session.activeVirusesUp();
 }
 
-int Virus::findNextVictim(Session& session) { // make a copy to the next victim, and then look for another one
+int Virus::findNextVictim(Session& session) const { // make a copy to the next victim, and then look for another one
     Graph* g = session.getGraph();
     vector<int> neighbors = g->getNeighbors(this->nodeInd);
-    for (int i = 0; i < neighbors.size(); ++i) {
+     int neighbors_size = neighbors.size();
+    for (int i = 0; i < neighbors_size; ++i) {
         if (g->isVirusFree(neighbors[i])) return neighbors[i];
     }
     // If no next victim, do:
@@ -60,7 +61,8 @@ void Virus::act(Session &session) {
     /* action types (each occurs in a single iteration):
      * (1) Infect nodeInd and spread to first neighbor
      * (2) Spread to next neighbor
-     * (3) Delete self */
+     * (3) Delete self
+     * */
     if (!this->is_active) return; // checks if the virus is active.
     if (session.getGraph()->isVirusFree(this->nodeInd)) occupy(session, this->nodeInd);
     if (!session.getGraph()->isInfected(this->nodeInd)) infectNode(session); // check if current node is infected

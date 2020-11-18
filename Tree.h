@@ -29,7 +29,6 @@ private:
     int node; // DO NOT CHANGE!
     std::vector<Tree*> children; // DO NOT CHANGE!
     void clear();
-
 };
 
 class CycleTree: public Tree{

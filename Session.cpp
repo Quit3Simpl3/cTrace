@@ -9,14 +9,24 @@
 using namespace std;
 using namespace nlohmann;
 
-vector<vector<int>> json_to_adjacency_matrix(json j) {
-    vector<vector<int>> matrix = j.at("graph");
+json Session::_create_json(const std::string &path) {
+    ifstream stream(path, ifstream::binary);
+    json j;
+    stream >> j;
+    return j;
+}
+
+json Session::_json() {
+    return this->js;
+}
+
+vector<vector<int>> Session::_json_to_matrix() {
+    vector<vector<int>> matrix = this->_json().at("graph");
     return matrix;
 }
 
-void Session::json_to_agents(json j) {
-    // reset _active_viruses to 0:
-    this->_setActiveViruses(0);
+void Session::_json_to_agents(json j) {
+    this->_setActiveViruses(0); // reset active-viruses to 0
     vector<pair<string, int>> agents_matrix = j.at("agents");
     for (const pair<string, int>& a : agents_matrix) {
         this->createAgent(a.first, a.second); // create the necessary agent
@@ -29,15 +39,12 @@ void Session::createAgent(const string& agent_type, int start_node) {
     }
     else {
         this->activeVirusesUp(); // update active viruses counter
-//        Virus* virus = new Virus(start_node);
         this->addAgent(Virus(start_node));
         this->g.occupyNode(start_node); // mark start_node as occupied
     }
-    // TODO: make sure temp ct and virus are deleted
 }
 
 void Session::addAgent(const Agent& agent) { // DO NOT CHANGE SIGNATURE
-//    this->agents.push_back(agent.clone());
     if (agent.getType() == 'V') {
         Virus* virus = new Virus(agent.getNode());
         this->agents.push_back(virus);
@@ -50,36 +57,30 @@ void Session::addAgent(const Agent& agent) { // DO NOT CHANGE SIGNATURE
 
 TreeType json_to_treeType(json j) {
     string tree_type_short = j.at("tree");
-    if (tree_type_short == "M") return MaxRank;
-    if (tree_type_short == "C") return Cycle;
-    else return Root; // maybe if(..."R")?
+    if (tree_type_short == "M" || tree_type_short == "m") return MaxRank;
+    if (tree_type_short == "C" || tree_type_short == "c") return Cycle;
+    else return Root;
 }
 
-Session::Session(const std::string &path) : _active_viruses(0) {
-    // read json from file and parse to vertices adjacency matrix
-    ifstream stream(path,ifstream::binary);
-
-    json j;
-    stream >> j; // parse json from file
-//    j = json::parse(stream,nullptr,false); // select which one to use
-    setGraph(Graph(json_to_adjacency_matrix(j)));
-
-    // Add agents to Session by their order in json config file:
-    this->json_to_agents(j); // parse json to agents
-
-    // set treeType from json:
-    this->treeType = json_to_treeType(j);
-
-    // reset cycle to 0:
-    this->cycle = 0;
+Session::Session(const std::string &path) :
+    js(_create_json(path)),
+    g(Graph(_json_to_matrix())),
+    treeType(json_to_treeType(this->js)),
+    agents(),
+    _active_viruses(0),
+    infectedQ(),
+    cycle(0) // reset cycle to 0
+    {
+    // parse json to agents and add them to Session by their order in json config file:
+    this->_json_to_agents(this->js);
 }
 
 bool Session::checkStopCondition() { // check termination conditions
     Graph* graph = this->getGraph();
     return (
-            (graph->getInfectedCounter() == graph->size())
+            (graph->getInfectedCounter() == graph->size()) /* All nodes are infected. */
             ||
-            (this->getActiveViruses() == 0)
+            (this->getActiveViruses() == 0) /* All viruses stopped spreading. */
             );
 }
 
@@ -89,18 +90,18 @@ void Session::updateCycle() {
 
 void Session::simulate() {
     do {
-        // create tmp_agents vector -> run foreach-loop over tmp_agents
-        vector<Agent*> tmp_agents(this->agents);
+        vector<Agent*> tmp_agents(this->agents); // run for-loop on current agents, not including those added in 'act'
         for (auto agent : tmp_agents) { // iterate over all active agents
             agent->act(*this); // if a new virus has been added during this cycle, do not 'act' it until the new cycle
         }
         this->updateCycle(); // cycle++
     } while(!this->checkStopCondition());
 
+    // Generate output.json:
     json output;
     output["graph"] = this->getGraph()->getEdges();
     output["infected"] = this->getGraph()->getInfectedNodes();
-    ofstream output_stream("./output.json");
+    ofstream output_stream("./output.json"); // TODO: "./output.json" or "../output.json"?
     output_stream << output;
 }
 
@@ -110,7 +111,6 @@ void Session::setGraph(const Graph &graph) {
 
 void Session::enqueueInfected(int node) {
     this->infectedQ.push(node);
-    // maybe handle graph here?
 }
 
 int Session::dequeueInfected() {
@@ -133,7 +133,7 @@ Graph* Session::getGraph() {
     return ptr_g;
 }
 
-    int Session::getCycle() const  {
+int Session::getCycle() const  {
     return this->cycle;
 }
 
@@ -154,10 +154,10 @@ void Session::_setActiveViruses(int val) {
 }
 
 Session::~Session() {
-    for (int i = 0; i < this->agents.size(); ++i) {
+    int agents_size = this->agents.size();
+    for (int i = 0; i < agents_size; ++i) {
         delete this->agents[i];
     }
-//    if (!this->agents.empty()) this->agents.clear();
     clearQ(this->infectedQ);
 }
 
