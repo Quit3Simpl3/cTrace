@@ -40,7 +40,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
         child_pos.pop();
         const vector<int>& is_edge = g->getEdge(tmptree->getNode());
         for (int i = 0; i < is_edge.size(); ++i) {
-            if (is_edge[i] == 1 & child_is_in[i] == true) {
+            if (is_edge[i] == 1 & child_is_in[i]) {
                 child_is_in[i] = false;
                 Tree *child_tree = Tree::createTree(session,i);
                 child_pos.push(child_tree);

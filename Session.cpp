@@ -4,13 +4,12 @@
 #include "Graph.h"
 #include "Agent.h"
 #include <fstream>
-#include "Tree.h"
+#include "Tree.h" // TODO: remove me?
 
 using namespace std;
 using namespace nlohmann;
 
 vector<vector<int>> json_to_adjacency_matrix(json j) {
-    cout << "what the hell" << endl;
     vector<vector<int>> matrix = j.at("graph");
     return matrix;
 }
@@ -56,7 +55,7 @@ TreeType json_to_treeType(json j) {
     else return Root; // maybe if(..."R")?
 }
 
-Session::Session(const std::string &path) {
+Session::Session(const std::string &path) : _active_viruses(0) {
     // read json from file and parse to vertices adjacency matrix
     ifstream stream(path,ifstream::binary);
 
@@ -89,27 +88,20 @@ void Session::updateCycle() {
 }
 
 void Session::simulate() {
-    cout << "Starting simulation..." << endl;
-    int i = 0;
     do {
         // create tmp_agents vector -> run foreach-loop over tmp_agents
         vector<Agent*> tmp_agents(this->agents);
         for (auto agent : tmp_agents) { // iterate over all active agents
             agent->act(*this); // if a new virus has been added during this cycle, do not 'act' it until the new cycle
         }
-        cout << "Cycle: " << this->getCycle() << endl;
         this->updateCycle(); // cycle++
-        // DEBUG
-        i++;
-        // DEBUG
-    }
-    while(!this->checkStopCondition() || i == 9);
-    json answer;
-    answer["graph"] = this->getGraph()->getEdges();
-    answer["infected"] = this->getGraph()->getInfectedNodes();
-    ofstream myAnserIs("./output.json");
-    myAnserIs << answer;
-    cout << "created output file" << endl;
+    } while(!this->checkStopCondition());
+
+    json output;
+    output["graph"] = this->getGraph()->getEdges();
+    output["infected"] = this->getGraph()->getInfectedNodes();
+    ofstream output_stream("./output.json");
+    output_stream << output;
 }
 
 void Session::setGraph(const Graph &graph) {

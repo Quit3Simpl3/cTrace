@@ -19,7 +19,7 @@ enum TreeType{ // DO NOT CHANGE!
 
 class Session{
 public:
-    Session(){}; // default constructor
+//    Session(){}; // default constructor
     Session(const std::string& path); // DO NOT CHANGE!
     // TODO: implement copy-constructor of Session (deep copy of agents and graph) if needed
     virtual ~Session();

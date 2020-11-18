@@ -5,13 +5,13 @@
 
 using namespace std;
 
+Graph::Graph() : edges(vector<vector<int>>(1, vector<int>(1,0))) {}
+
 Graph::Graph(std::vector<std::vector<int>> matrix) {
-    cout << "I'm gonna start building your graph now..." << endl; // delme
-    this->edges = matrix; // rename matrix to this.edges
+    this->edges = matrix; // TODO: maybe use move constructor?
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);
     this->_setInfectedCounter(0); // no vertices are currently infected
-    cout << "Done building your graph." << endl;
 }
 
 void Graph::occupyNode(int nodeInd) {
