@@ -9,12 +9,42 @@
 using namespace std;
 using namespace nlohmann;
 
-vector<vector<int>> json_to_adjacency_matrix(json j) {
+json Session::_create_json(const std::string &path) {
+    ifstream stream(path, ifstream::binary);
+    json j;
+    stream >> j;
+    return j;
+}
+
+json Session::_json() {
+    return this->js;
+}
+
+/*vector<vector<int>> json_to_adjacency_matrix(json j) {
     vector<vector<int>> matrix = j.at("graph");
+    return matrix;
+}*/
+
+vector<vector<int>> Session::_json_to_matrix() {
+    /*ifstream stream(path,ifstream::binary);
+
+    json j;
+    stream >> j; // parse json from file*/
+
+    vector<vector<int>> matrix = this->_json().at("graph"); //j.at("graph");
     return matrix;
 }
 
-void Session::json_to_agents(json j) {
+/*void Session::json_to_agents(json j) {
+    // reset _active_viruses to 0:
+    this->_setActiveViruses(0);
+    vector<pair<string, int>> agents_matrix = j.at("agents");
+    for (const pair<string, int>& a : agents_matrix) {
+        this->createAgent(a.first, a.second); // create the necessary agent
+    }
+}*/
+
+void Session::_json_to_agents(json j) {
     // reset _active_viruses to 0:
     this->_setActiveViruses(0);
     vector<pair<string, int>> agents_matrix = j.at("agents");
@@ -37,7 +67,6 @@ void Session::createAgent(const string& agent_type, int start_node) {
 }
 
 void Session::addAgent(const Agent& agent) { // DO NOT CHANGE SIGNATURE
-//    this->agents.push_back(agent.clone());
     if (agent.getType() == 'V') {
         Virus* virus = new Virus(agent.getNode());
         this->agents.push_back(virus);
@@ -55,23 +84,20 @@ TreeType json_to_treeType(json j) {
     else return Root; // maybe if(..."R")?
 }
 
-Session::Session(const std::string &path) : _active_viruses(0) {
-    // read json from file and parse to vertices adjacency matrix
-    ifstream stream(path,ifstream::binary);
-
-    json j;
-    stream >> j; // parse json from file
-//    j = json::parse(stream,nullptr,false); // select which one to use
-    setGraph(Graph(json_to_adjacency_matrix(j)));
-
+Session::Session(const std::string &path) :
+    js(_create_json(path)),
+    g(Graph(_json_to_matrix())),
+    treeType(json_to_treeType(this->js)),
+    agents(),
+    _active_viruses(0),
+    infectedQ(),
+    cycle(0) // reset cycle to 0
+    {
     // Add agents to Session by their order in json config file:
-    this->json_to_agents(j); // parse json to agents
+    this->_json_to_agents(this->js); // parse json to agents
 
     // set treeType from json:
-    this->treeType = json_to_treeType(j);
-
-    // reset cycle to 0:
-    this->cycle = 0;
+    /*this->treeType = json_to_treeType(this->js);*/
 }
 
 bool Session::checkStopCondition() { // check termination conditions
@@ -154,10 +180,10 @@ void Session::_setActiveViruses(int val) {
 }
 
 Session::~Session() {
-    for (int i = 0; i < this->agents.size(); ++i) {
+    int agents_size = this->agents.size();
+    for (int i = 0; i < agents_size; ++i) {
         delete this->agents[i];
     }
-//    if (!this->agents.empty()) this->agents.clear();
     clearQ(this->infectedQ);
 }
 

@@ -5,9 +5,20 @@
 
 using namespace std;
 
-Graph::Graph() : edges(vector<vector<int>>(1, vector<int>(1,0))) {/*default constructor*/}
+Graph::Graph() :
+    edges(vector<vector<int>>(1, vector<int>(1,0))),
+    infections(vector<int>(1,0)),
+    virus_free(vector<int>(0,1)),
+    infected_nodes(vector<int>(0,1)),
+    _infected_counter(0)
+    {/*default constructor*/}
 
-Graph::Graph(std::vector<std::vector<int>> matrix) {
+Graph::Graph(std::vector<std::vector<int>> matrix) :
+    edges(vector<vector<int>>(1, vector<int>(1,0))),
+    infections(vector<int>(1,0)),
+    virus_free(vector<int>(0,1)),
+    infected_nodes(vector<int>(0,1)),
+    _infected_counter(0) { // TODO: Any way to use the default constructor's initializer list?
     this->edges = matrix; // TODO: maybe use move constructor?
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);
@@ -29,7 +40,11 @@ bool Graph::isInfected(int nodeInd) {
 }
 
 bool Graph::isVirusFree(int nodeInd) {
-    return (this->virus_free[nodeInd]==1);
+    int edges_size = this->edges.size();
+    if (nodeInd >= 0 && nodeInd < edges_size) {
+        return (this->virus_free[nodeInd]==1);
+    }
+    return false;
 }
 
 int Graph::size() const {
@@ -46,9 +61,11 @@ void Graph::removeEdge(int u, int v) { // remove the edge {u,v} from this->edges
 }
 
 vector<int> Graph::getNeighbors(int node) {
-    vector<int> neighbors;
-    for (int i = 0; i < this->edges[node].size(); ++i) { // TODO: don't iterate if no neighbors
-        if (this->edges[node][i] == 1) neighbors.push_back(i);
+    int edges_size = 0; // Set a default size to edges_size for safety
+    edges_size = this->edges[node].size();
+    vector<int> neighbors = vector<int>(edges_size, -1); // initialize neighbors vector for safety
+    for (int i = 0; i < edges_size; ++i) {
+        if (this->edges[node][i] == 1) neighbors[i] = i;
     }
     return neighbors;
 }
@@ -61,11 +78,6 @@ void Graph::_setInfectedCounter(int val) {
     this->_infected_counter = val;
 }
 
-void Graph::_infectedCounterDown() {
-    int count = this->getInfectedCounter() - 1;
-    this->_setInfectedCounter(count);
-}
-
 void Graph::_infectedCounterUp() {
     int count = this->getInfectedCounter() + 1;
     this->_setInfectedCounter(count);
@@ -76,7 +88,6 @@ std::vector<std::vector<int>> Graph::getEdges() {
 }
 
 std::vector<int> Graph::getInfectedNodes() {
-    cout << this->getInfectedCounter() << endl;
     return this->infected_nodes;
 }
 

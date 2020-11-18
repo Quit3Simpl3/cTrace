@@ -45,10 +45,11 @@ void Virus::occupy(Session& session, int node) {
     session.activeVirusesUp();
 }
 
-int Virus::findNextVictim(Session& session) { // make a copy to the next victim, and then look for another one
+int Virus::findNextVictim(Session& session) const { // make a copy to the next victim, and then look for another one
     Graph* g = session.getGraph();
     vector<int> neighbors = g->getNeighbors(this->nodeInd);
-    for (int i = 0; i < neighbors.size(); ++i) {
+     int neighbors_size = neighbors.size();
+    for (int i = 0; i < neighbors_size; ++i) {
         if (g->isVirusFree(neighbors[i])) return neighbors[i];
     }
     // If no next victim, do:

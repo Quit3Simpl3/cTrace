@@ -54,7 +54,7 @@ public:
 private:
     const int nodeInd; // DO NOT CHANGE!
     bool is_active=true; // Whether Virus.act() should run
-    int findNextVictim(Session& session); // get next node to spread to
+    int findNextVictim(Session& session) const; // get next node to spread to
     void occupy(Session& session, int node); // spread to node
 };
 
