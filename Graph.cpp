@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Graph::Graph() : edges(vector<vector<int>>(1, vector<int>(1,0))) {}
+Graph::Graph() : edges(vector<vector<int>>(1, vector<int>(1,0))) {/*default constructor*/}
 
 Graph::Graph(std::vector<std::vector<int>> matrix) {
     this->edges = matrix; // TODO: maybe use move constructor?
