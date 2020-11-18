@@ -1,5 +1,4 @@
 #include "Graph.h"
-
 #include <utility>
 #include <iostream>
 
@@ -18,7 +17,7 @@ Graph::Graph(std::vector<std::vector<int>> matrix) :
     infections(vector<int>(1,0)),
     virus_free(vector<int>(0,1)),
     infected_nodes(vector<int>(0,1)),
-    _infected_counter(0) { // TODO: Any way to use the default constructor's initializer list?
+    _infected_counter(0) {
     this->edges = matrix; // TODO: maybe use move constructor?
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);

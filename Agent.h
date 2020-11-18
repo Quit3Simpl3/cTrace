@@ -2,33 +2,28 @@
 #define AGENT_H_
 
 #include "Session.h"
-
 #include <vector>
 
 class Agent{
 public:
     Agent(); // DO NOT CHANGE!
     virtual void act(Session& session)=0; // DO NOT CHANGE!
+    virtual ~Agent(){}; // Destructor
   
     virtual Agent* clone() const=0;
-    virtual ~Agent(){};
     virtual char getType() const=0;
-
     virtual int getNode() const=0;
 };
 
 class ContactTracer: public Agent{
 public:
     ContactTracer(); // DO NOT CHANGE!
-  
     ContactTracer(const ContactTracer &contactTracer); // Copy-Constructor
-    ContactTracer* clone() const;
     virtual ~ContactTracer();
 
+    ContactTracer* clone() const;
     int getNode() const {return -1;};
-
     char getType() const;
-
     virtual void act(Session& session); // DO NOT CHANGE!
     void removeAllEdges(Session& session, int node);
     int dequeueInfected(Session& session);
@@ -38,14 +33,11 @@ public:
 class Virus: public Agent{
 public:
     Virus(int nodeInd); // DO NOT CHANGE!
-
     Virus(const Virus &virus); // Copy-Constructor
-    virtual ~Virus();
+    virtual ~Virus(); // Destructor
 
     char getType() const;
-
     virtual Virus* clone() const; // for copying
-
     virtual void act(Session& session); // DO NOT CHANGE!
     void infectNode(Session& session);
     void deactivate(Session& session); // set Virus as not active

@@ -20,10 +20,8 @@ enum TreeType{ // DO NOT CHANGE!
 
 class Session{
 public:
-//    Session(){}; // default constructor
     Session(const std::string& path); // DO NOT CHANGE!
-    // TODO: implement copy-constructor of Session (deep copy of agents and graph) if needed
-    virtual ~Session();
+    virtual ~Session(); // Destructor
 
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
@@ -39,13 +37,15 @@ public:
     void activeVirusesDown();
 
 private:
-    json js;
+    // private fields:
+    json js; // json object
     Graph g; // DO NOT CHANGE!
     TreeType treeType; // DO NOT CHANGE!
     std::vector<Agent*> agents; // DO NOT CHANGE!
     int _active_viruses; // active viruses counter
     queue<int> infectedQ;
     int cycle; // cycle counter
+
     // private methods:
     static json _create_json(const std::string &path);
     json _json();
@@ -55,7 +55,7 @@ private:
     void _setActiveViruses(int val); // set value for _active_viruses
     bool checkStopCondition(); // checks whether termination conditions are fulfilled
     void createAgent(const string&, int); // create a new agent from json using ("V/C", node_number) pair
-    static void clearQ(queue<int>& q);
+    static void clearQ(queue<int>& q); // delete infectedQ
 };
 
 #endif
