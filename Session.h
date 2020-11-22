@@ -39,6 +39,8 @@ public:
     int getActiveViruses() const; // return count of active viruses
     void activeVirusesUp();
     void activeVirusesDown();
+    int getAgentsSize() const;
+    Agent* getAgent(int i);
 
     void clear();
 

@@ -18,7 +18,7 @@ Graph::Graph(std::vector<std::vector<int>> matrix) :
     virus_free(vector<int>(0,1)),
     infected_nodes(vector<int>(0,1)),
     _infected_counter(0) {
-    this->edges = matrix; // TODO: maybe use move constructor?
+    this->edges = matrix;
     this->infections = vector<int>(this->edges.size(), 0);
     this->virus_free = vector<int>(this->edges.size(), 1);
     this->_setInfectedCounter(0); // no vertices are currently infected

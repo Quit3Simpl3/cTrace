@@ -12,6 +12,8 @@ class Tree{
 public:
     Tree(int rootLabel); // DO NOT CHANGE!
     void addChild(const Tree &child); // DO NOT CHANGE!
+    void addChild(Tree* child);
+    virtual ~Tree(); // Destructor
     Tree(const Tree &other); // Copy-Constructor
     Tree(Tree &&other); // Move-Constructor
     Tree & operator=(const Tree &other); // Copy-Assignment Operator
@@ -24,16 +26,15 @@ public:
     int getNode() const; // Return this->node
     vector<Tree*> getChildren();
     void maxRankTraceTree(vector<array<int,3>> &track_tree, int high);
-    virtual ~Tree(); // Destructor
     virtual char getType() const=0;
     int getCycle() const { return -1; };
     int size() const;
     void clone_children(const Tree &other);
+    void clear();
 
 private:
     int node; // DO NOT CHANGE!
     std::vector<Tree*> children; // DO NOT CHANGE!
-    void clear();
 };
 
 class CycleTree: public Tree{

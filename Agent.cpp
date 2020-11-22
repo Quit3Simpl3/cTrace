@@ -58,11 +58,6 @@ int Virus::findNextVictim(Session& session) const { // make a copy to the next v
 }
 
 void Virus::act(Session &session) {
-    /* action types (each occurs in a single iteration):
-     * (1) Infect nodeInd and spread to first neighbor
-     * (2) Spread to next neighbor
-     * (3) Delete self
-     * */
     if (!this->is_active) return; // checks if the virus is active.
     if (session.getGraph()->isVirusFree(this->nodeInd)) occupy(session, this->nodeInd);
     if (!session.getGraph()->isInfected(this->nodeInd)) infectNode(session); // check if current node is infected
