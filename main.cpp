@@ -2,13 +2,18 @@
 
 using namespace std;
 #include "Session.h"
+#include "FiveRuleTester.cpp"
 
 int main(int argc, char** argv){
-    if(argc != 2){
-        std::cout << "usage cTrace <config_path>" << std::endl;
-        return 0;
-    }
-    Session sess(argv[1]);
-    sess.simulate();
+    std::cout << "Starting tests..." << std::endl;
+
+
+    FiveRuleTestTree<MaxRankTree>();
+    FiveRuleTestTree<RootTree>();
+
+    /*Tester tester(argv[1]);
+
+    tester.run_tests();*/
+
     return 0;
 }

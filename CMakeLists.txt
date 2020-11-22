@@ -12,4 +12,4 @@ add_executable(spl_01
         main.cpp
         Session.h
         Tree.h
-        Graph.cpp Agent.cpp Tree.cpp Session.cpp)
+        Graph.cpp Agent.cpp Tree.cpp Session.cpp TestersChoice.cpp)

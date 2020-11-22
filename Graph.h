@@ -9,7 +9,7 @@ class Graph{
 public:
     Graph(); // Default constructor
     Graph(std::vector<std::vector<int>> matrix); // DO NOT CHANGE!
-    Graph(const Graph *other); // Copy-Constructor
+    Graph(const Graph &other); // Copy-Constructor
 
     void infectNode(int nodeInd); // DO NOT CHANGE!
     bool isInfected(int nodeInd); // DO NOT CHANGE!

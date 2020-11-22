@@ -22,6 +22,10 @@ class Session{
 public:
     Session(const std::string& path); // DO NOT CHANGE!
     virtual ~Session(); // Destructor
+    Session(const Session& other); // Copy-Constructor
+    Session(Session &&other); // Move-Constructor
+    Session& operator=(const Session &other); // Copy Assignment Operator
+    Session& operator=(Session &&other); // Move Assignment Operator
 
     void simulate(); // DO NOT CHANGE!
     void addAgent(const Agent& agent); // DO NOT CHANGE!
@@ -35,6 +39,8 @@ public:
     int getActiveViruses() const; // return count of active viruses
     void activeVirusesUp();
     void activeVirusesDown();
+
+    void clear();
 
 private:
     // private fields:
@@ -56,6 +62,7 @@ private:
     bool checkStopCondition(); // checks whether termination conditions are fulfilled
     void createAgent(const string&, int); // create a new agent from json using ("V/C", node_number) pair
     static void clearQ(queue<int>& q); // delete infectedQ
+    static queue<int> copy_queue(const queue<int> &other);
 };
 
 #endif

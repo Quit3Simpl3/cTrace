@@ -90,9 +90,9 @@ std::vector<int> Graph::getInfectedNodes() {
     return this->infected_nodes;
 }
 
-Graph::Graph(const Graph *other) :
-        edges(other->edges),
-        infections(other->infections),
-        virus_free(other->virus_free),
-        infected_nodes(other->infected_nodes),
-        _infected_counter(other->_infected_counter) {}
+Graph::Graph(const Graph &other) :
+        edges(other.edges),
+        infections(other.infections),
+        virus_free(other.virus_free),
+        infected_nodes(other.infected_nodes),
+        _infected_counter(other._infected_counter) {}

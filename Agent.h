@@ -19,7 +19,7 @@ class ContactTracer: public Agent{
 public:
     ContactTracer(); // DO NOT CHANGE!
     ContactTracer(const ContactTracer &contactTracer); // Copy-Constructor
-    virtual ~ContactTracer();
+    virtual ~ContactTracer(); // Destructor
 
     ContactTracer* clone() const;
     int getNode() const {return -1;};
@@ -33,7 +33,8 @@ public:
 class Virus: public Agent{
 public:
     Virus(int nodeInd); // DO NOT CHANGE!
-    Virus(const Virus &virus); // Copy-Constructor
+    Virus(const Virus &other); // Copy-Constructor
+    Virus(Virus&& other); // Move-Constructor
     virtual ~Virus(); // Destructor
 
     char getType() const;

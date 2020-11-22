@@ -85,7 +85,7 @@ Virus* Virus::clone() const {
     return new Virus(*this);
 }
 
-Virus::Virus(const Virus &virus) : nodeInd(virus.getNode()) {/*Copy-Constructor*/}
+Virus::Virus(const Virus &other) : nodeInd(other.getNode()) {/*Copy-Constructor*/}
 
 ContactTracer* ContactTracer::clone() const {
     return new ContactTracer(*this);
@@ -100,6 +100,10 @@ ContactTracer::~ContactTracer() { /*delete ContactTracer object*/ }
 char ContactTracer::getType() const {
     return 'C';
 }
+
 char Virus::getType() const {
     return 'V';
 }
+
+Virus::Virus(Virus &&other) : nodeInd(other.getNode()) {/*Move-Constructor*/}
+
