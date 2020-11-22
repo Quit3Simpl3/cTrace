@@ -4,13 +4,30 @@
 #include "Session.h"
 #include <array>
 #include <typeinfo>
+#include <iostream>
 
 using namespace std;
 
 Tree::Tree(int rootLabel) : node(rootLabel) , children() {}
 
-void Tree::addChild(const Tree &child)  {
-    children.push_back((Tree*) (&child));
+void Tree::addChild(const Tree &child)  { // addChile copies child
+    char type = child.getType();
+    if (type == 'C') {
+        Tree* kid = new CycleTree((CycleTree&)child);
+        this->children.push_back(kid);
+    }
+    else if (type == 'M') {
+        Tree* kid = new MaxRankTree((MaxRankTree&)child);
+        this->children.push_back(kid);
+    }
+    else {
+        Tree* kid = new RootTree((RootTree&)child);
+        this->children.push_back(kid);
+    }
+}
+
+void Tree::addChild(Tree* child) {
+    this->children.push_back(child);
 }
 
 Tree *Tree::createTree(const Session &session, int rootLabel) {
@@ -37,9 +54,9 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
         for (int i = 0; i < node_edges_size; ++i) {
             if (node_edges[i] == 1 && is_child_in_children[i]) {
                 is_child_in_children[i] = false;
-                Tree *child_tree = Tree::createTree(session,i);
+                Tree *child_tree = Tree::createTree(session, i);
                 child_pos.push(child_tree);
-                tmptree->addChild(*child_tree);
+                tmptree->addChild(child_tree);
             }
         }
 
@@ -47,7 +64,7 @@ Tree *Tree::BFS(Session& session, int rootLabel) {
     return father_tree;
 }
 
-int Tree::getNode() {
+int Tree::getNode() const {
     return node;
 }
 
@@ -69,6 +86,22 @@ int CycleTree::traceTree() {
         }
         return cycle_round->getNode();
     }
+}
+
+char CycleTree::getType() const {
+    return 'C';
+}
+
+int CycleTree::getCycle() const {
+    return this->currCycle;
+}
+
+char MaxRankTree::getType() const {
+    return 'M';
+}
+
+char RootTree::getType() const {
+    return 'R';
 }
 
 MaxRankTree::MaxRankTree(int rootLabel) : Tree(rootLabel) {}
@@ -96,6 +129,44 @@ int MaxRankTree::traceTree() {
     }
 }
 
+void Tree::clone_children(const Tree &other) {
+    int size = other.size();
+    for (int i = 0; i < size; ++i) {
+        char type = other.children[i]->getType();
+        if (type == 'C') {
+            CycleTree* new_kid = new CycleTree(static_cast<CycleTree const&>(*other.children[i]));
+            this->children.push_back(new_kid);
+        }
+        else if (type == 'M') {
+            MaxRankTree* new_kid = new MaxRankTree(static_cast<MaxRankTree const&>(*other.children[i]));
+            this->children.push_back(new_kid);
+        }
+        else {
+            RootTree* new_kid = new RootTree(static_cast<RootTree const&>(*other.children[i]));
+            this->children.push_back(new_kid);
+        }
+    }
+}
+
+Tree::Tree(const Tree &other) : node(other.node), children() {
+    this->clone_children(other);
+}
+
+MaxRankTree::MaxRankTree(const MaxRankTree &other) : Tree(other) {/*Copy-Constructor*/}
+
+MaxRankTree::MaxRankTree(MaxRankTree &&other) : Tree(other) {
+}
+
+RootTree::RootTree(const RootTree &other) : Tree(other) {/*Copy-Constructor*/}
+
+CycleTree::CycleTree(const CycleTree &other) :
+    Tree(other),
+    currCycle(other.getCycle()) {/*copy-constructor*/}
+
+int Tree::size() const {
+    return this->children.size();
+}
+
 void Tree::maxRankTraceTree (vector<array<int,3>> &track_tree, int high) {
     int tree_size = children.size();
     track_tree.push_back({(int)tree_size, (int)high, (int) getNode()});
@@ -112,28 +183,44 @@ Tree::~Tree() {
     this->clear();
 }
 
-Tree::Tree(const Tree &aTree) : node(aTree.node), children(aTree.children) {/*copy-constructor*/}
-
 void Tree::clear() {
     int children_size = this->children.size();
     for (int i = 0; i < children_size; ++i) { // delete this Tree's children
-        delete children[i];
+        delete this->children[i];
     }
-    return; // for some reason CLion requested this
-}
-
-Tree &Tree::operator=(const Tree &other) {
-    if (other.children == this->children) {
-        return *this;
-    }
-    this->clear();
-    this->node = other.node;
-    this->children = other.children;
-    return *this;
+    this->node = -1;
+    this->children.clear();
 }
 
 RootTree::RootTree(int rootLabel) : Tree(rootLabel) {}
 
 int RootTree::traceTree() {
     return getNode();
+}
+
+Tree::Tree(Tree &&other) : // Move-Constructor
+    node(other.node),
+    children(other.children) {
+    other.children = vector<Tree*>();
+    other.clear();
+}
+
+Tree &Tree::operator=(const Tree &other) { // Copy Assignment Operator
+    if (this != &other) {
+        this->clear();
+        this->node = other.node;
+        this->clone_children(other);
+    }
+    return *this;
+}
+
+Tree &Tree::operator=(Tree &&other) { // Move Assignment Operator
+    if (this != &other) {
+        clear();
+        node = other.node;
+        children = other.children;
+        other.children = vector<Tree*>();
+        other.clear();
+    }
+    return *this;
 }

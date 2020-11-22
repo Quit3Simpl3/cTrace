@@ -4,7 +4,7 @@
 #include "Graph.h"
 #include "Agent.h"
 #include <fstream>
-#include "Tree.h" // TODO: remove me?
+#include "Tree.h"
 
 using namespace std;
 using namespace nlohmann;
@@ -101,12 +101,12 @@ void Session::simulate() {
     json output;
     output["graph"] = this->getGraph()->getEdges();
     output["infected"] = this->getGraph()->getInfectedNodes();
-    ofstream output_stream("./output.json"); // TODO: "./output.json" or "../output.json"?
+    ofstream output_stream("./output.json");
     output_stream << output;
 }
 
 void Session::setGraph(const Graph &graph) {
-    this->g = &graph; // using Copy-Constructor because &graph is const
+    this->g = Graph(graph); // using Copy-Constructor because &graph is const
 }
 
 void Session::enqueueInfected(int node) {
@@ -154,14 +154,127 @@ void Session::_setActiveViruses(int val) {
 }
 
 Session::~Session() {
+    this->clear();
+}
+
+void Session::clear() {
     int agents_size = this->agents.size();
     for (int i = 0; i < agents_size; ++i) {
         delete this->agents[i];
     }
     clearQ(this->infectedQ);
+    g = Graph();
+    this->agents = vector<Agent*>();
 }
 
 void Session::clearQ(queue<int>& q) {
     queue<int> empty;
     swap(q, empty);
+}
+
+Session::Session(const Session &other) : // Copy-Constructor
+    js(json(other.js)),
+    g(Graph(other.g)),
+    treeType(other.getTreeType()),
+    agents(),
+    _active_viruses(other.getActiveViruses()),
+    infectedQ(),
+    cycle(other.getCycle()) {
+    // Copy agents:
+    int other_agents_size = other.getAgentsSize();
+    for (int i = 0 ; i < other_agents_size ; ++i) {
+        // copy all agents
+        if (other.agents[i]->getType() == 'V') {
+            Virus* virus = new Virus(other.agents[i]->getNode());
+            agents.push_back(virus);
+        }
+        else {
+            ContactTracer* contact_tracer = new ContactTracer();
+            agents.push_back(contact_tracer);
+        }
+    }
+    // Copy infected queue:
+    infectedQ = copy_queue(other.infectedQ);
+}
+
+queue<int> Session::copy_queue(const queue<int> &other) {
+    queue<int> new_queue = other;
+    return new_queue;
+}
+
+Session::Session(Session &&other) : // Move-Constructor
+    js(json(other.js)),
+    g(Graph(other.g)),
+    treeType(other.getTreeType()),
+    agents(),
+    _active_viruses(other.getActiveViruses()),
+    infectedQ(),
+    cycle(other.getCycle()) {
+    other.js = json();
+    other.g = Graph();
+    // Move agents:
+    int other_agents_size = other.getAgentsSize();
+    for (int i = 0; i < other_agents_size; ++i) {
+        agents.push_back(other.agents[i]);
+        other.agents[i] = nullptr;
+    }
+    // Move queue and clear other's:
+    infectedQ = other.infectedQ;
+    clearQ(other.infectedQ);
+    other.clear();
+}
+
+Session &Session::operator=(const Session &other) {
+    if (this != &other) {
+        clear();
+        js = other.js;
+        g = other.g;
+        treeType = other.treeType;
+        _active_viruses = other._active_viruses;
+        cycle = other.cycle;
+        // Copy agents:
+        int other_agents_size = other.getAgentsSize();
+        for (int i = 0; i < other_agents_size; ++i) {
+            // copy all agents
+            if (other.agents[i]->getType() == 'V') {
+                Virus* virus = new Virus(other.agents[i]->getNode());
+                agents.push_back(virus);
+            }
+            else {
+                ContactTracer* contact_tracer = new ContactTracer();
+                agents.push_back(contact_tracer);
+            }
+        }
+        infectedQ = copy_queue(other.infectedQ);
+
+    }
+
+    return *this;
+}
+
+Session &Session::operator=(Session &&other) {
+    if (this != &other) {
+        this->clear();
+        js = other.js;
+        g = other.g;
+        treeType = other.getTreeType();
+        _active_viruses = other.getActiveViruses();
+        cycle = other.getCycle();
+        infectedQ = other.infectedQ;
+        agents = other.agents;
+
+        other.infectedQ = queue<int>();
+        other.agents = vector<Agent*>();
+        other.clear();
+    }
+
+    return *this;
+}
+
+int Session::getAgentsSize() const {
+    return agents.size();
+}
+
+Agent *Session::getAgent(int i) {
+    return this->agents[i];
 }
