@@ -164,7 +164,7 @@ void Session::clear() {
     }
     clearQ(this->infectedQ);
     g = Graph();
-    this->agents = vector<Agent*>();
+    this->agents = vector<Agent*>(); // To delete the pointers in agents
 }
 
 void Session::clearQ(queue<int>& q) {
@@ -246,9 +246,7 @@ Session &Session::operator=(const Session &other) {
             }
         }
         infectedQ = copy_queue(other.infectedQ);
-
     }
-
     return *this;
 }
 
@@ -267,7 +265,6 @@ Session &Session::operator=(Session &&other) {
         other.agents = vector<Agent*>();
         other.clear();
     }
-
     return *this;
 }
 

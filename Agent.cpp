@@ -18,7 +18,7 @@ void ContactTracer::act(Session& session) {
 
     int start_node = this->dequeueInfected(session); // get new infected node from queue
     if (start_node == -1) return; // dequeueInfected returns -1 if empty
-    Tree* bfs_tree = Tree::BFS(session, start_node); // Maybe create static TraceTree() in Tree.cpp and not delete bfs_tree here?
+    Tree* bfs_tree = Tree::BFS(session, start_node);
     int patient = bfs_tree->traceTree();
     this->removeAllEdges(session, patient); // remove all the patient's edges
     delete bfs_tree; // We must delete bfs_tree
@@ -48,7 +48,7 @@ void Virus::occupy(Session& session, int node) {
 int Virus::findNextVictim(Session& session) const { // make a copy to the next victim, and then look for another one
     Graph* g = session.getGraph();
     vector<int> neighbors = g->getNeighbors(this->nodeInd);
-     int neighbors_size = neighbors.size();
+    int neighbors_size = neighbors.size();
     for (int i = 0; i < neighbors_size; ++i) {
         if (g->isVirusFree(neighbors[i])) return neighbors[i];
     }
@@ -67,7 +67,7 @@ void Virus::act(Session &session) {
     else this->occupy(session, next_victim);
 }
 
-void Virus::deactivate(Session& session) {
+void Virus::deactivate(Session& session) { // using deactivation instead of deleting the virus, performance (would take O(n^2)) over memory (O(n))
     this->is_active = false;
     session.activeVirusesDown();
 }
