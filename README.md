@@ -1,5 +1,5 @@
 # cTrace
-### System Programming course assignment.
+##### System Programming course assignment. Received perfect score (100/100).
 #### Simulates the elimination of a plague by tracing the contacts of infected graph nodes and quarantining them (by cutting-off their edges to other nodes in the graph).
 #### The user chooses a number of contact tracers and viruses, and the starting nodes in the graph for the viruses.
 
